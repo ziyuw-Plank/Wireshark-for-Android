@@ -1,0 +1,51 @@
+name: Promote v1.1.0 release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/promote-v1.1.0.yml
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update release notes and status
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          import subprocess
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          release = json.loads(subprocess.check_output(
+              ["gh", "api", f"repos/{repo}/releases/tags/v1.1.0"], text=True
+          ))
+          body = release["body"]
+          changes = [
+              (
+                  "Pre-release: the UI has been verified with JVM screenshot tests only and has not yet run on a real phone.",
+                  "The app has been tested on a real Android phone and runs normally.",
+              ),
+              (
+                  "已验证：\n",
+                  "已验证：\n- 作者已在 Android 真机上测试 App，运行正常。\n",
+              ),
+              (
+                  "- **新界面还没有在真机或模拟器上运行过**：这次在构建环境里启动模拟器又失败了。su 授权、实时抓包、隔离沙箱和过滤器实时校验都还没有在设备上跑过。\n",
+                  "",
+              ),
+          ]
+          for old, new in changes:
+              if body.count(old) != 1:
+                  raise RuntimeError(f"Expected exactly one occurrence of: {old}")
+              body = body.replace(old, new, 1)
+          with open("/tmp/sharkdroid-release-notes.md", "w", encoding="utf-8") as output:
+              output.write(body)
+          PY
+          gh release edit v1.1.0 --repo "$GITHUB_REPOSITORY" --prerelease=false --notes-file /tmp/sharkdroid-release-notes.md
