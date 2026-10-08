@@ -6,7 +6,7 @@ SharkDroid brings the capture and dissection core of **Wireshark 4.6.9** (the la
 
 > Wireshark has no official Android version. The desktop Qt GUI is not ported. The packet list, protocol tree and hex view are SharkDroid's own UI, but every dissection result comes from the real tshark.
 
-**Status: pre-release.** The command-line tools have been verified on an Android emulator. The app's UI has been verified with JVM screenshot tests, but it has not yet been run on a real phone. Feedback is welcome.
+**Status: stable release.** The command-line tools have been verified on an Android emulator, and the app has been tested on a real Android phone and runs normally. Feedback is welcome.
 
 <table>
   <tr><td align="center"><img src="docs/screenshots/01_main_light.png" width="240" alt="Packet list (light)"><br><sub>Packet list (light)</sub></td><td align="center"><img src="docs/screenshots/02_main_dark.png" width="240" alt="Packet list (dark)"><br><sub>Packet list (dark)</sub></td><td align="center"><img src="docs/screenshots/04_interface_sheet.png" width="240" alt="Interface picker"><br><sub>Interface picker</sub></td><td align="center"><img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="Display filter"><br><sub>Display filter</sub></td></tr>
