@@ -1,19 +1,19 @@
 [binaries]
-c = '/opt/android-ndk-r27c/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang'
-cpp = '/opt/android-ndk-r27c/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++'
-ar = '/opt/android-ndk-r27c/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
-strip = '/opt/android-ndk-r27c/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip'
-pkg-config = '/usr/bin/pkg-config'
+c = '@NDK@/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang'
+cpp = '@NDK@/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android29-clang++'
+ar = '@NDK@/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-ar'
+strip = '@NDK@/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip'
+pkg-config = 'pkg-config'
 
 [built-in options]
-c_args = ['-O2','-fPIC','-fstack-protector-strong','-D_FORTIFY_SOURCE=2','-I/workspace/android-wireshark/prefix/include']
-c_link_args = ['-L/workspace/android-wireshark/prefix/lib','-Wl,-z,relro,-z,now']
-cpp_args = ['-O2','-fPIC','-fstack-protector-strong','-D_FORTIFY_SOURCE=2','-I/workspace/android-wireshark/prefix/include']
-cpp_link_args = ['-L/workspace/android-wireshark/prefix/lib','-Wl,-z,relro,-z,now']
+c_args = ['-O2','-fPIC','-fstack-protector-strong','-D_FORTIFY_SOURCE=2','-I@ROOT@/prefix/include']
+c_link_args = ['-L@ROOT@/prefix/lib','-Wl,-z,relro,-z,now']
+cpp_args = ['-O2','-fPIC','-fstack-protector-strong','-D_FORTIFY_SOURCE=2','-I@ROOT@/prefix/include']
+cpp_link_args = ['-L@ROOT@/prefix/lib','-Wl,-z,relro,-z,now']
 
 [properties]
-pkg_config_libdir = '/workspace/android-wireshark/prefix/lib/pkgconfig'
-sys_root = '/opt/android-ndk-r27c/toolchains/llvm/prebuilt/linux-x86_64/sysroot'
+pkg_config_libdir = '@ROOT@/prefix/lib/pkgconfig'
+sys_root = '@NDK@/toolchains/llvm/prebuilt/linux-x86_64/sysroot'
 
 [host_machine]
 system = 'android'

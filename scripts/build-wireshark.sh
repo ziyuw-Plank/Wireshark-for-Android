@@ -1,8 +1,11 @@
 #!/bin/bash
 set -euo pipefail
-source /workspace/android-wireshark/scripts/env.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/env.sh"
 cd $ROOT/src
 TCF="-DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-$API"
+mkdir -p "$ROOT/hosttools"
+# Lemon runs on the host, so build it before CMake checks LEMON_EXECUTABLE.
+[ -x "$ROOT/hosttools/lemon" ] || gcc -O2 -w -o "$ROOT/hosttools/lemon" "$ROOT/src/wireshark-4.6.9/tools/lemon/lemon.c"
 if [ ! -f build-ws/build.ninja ]; then
 cmake -S wireshark-4.6.9 -B build-ws -G Ninja $TCF -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/ws -DCMAKE_FIND_ROOT_PATH=$PREFIX -DCMAKE_PREFIX_PATH=$PREFIX \
@@ -21,5 +24,4 @@ cmake -S wireshark-4.6.9 -B build-ws -G Ninja $TCF -DCMAKE_BUILD_TYPE=Release \
   -DENABLE_LIBSSH=OFF -DENABLE_WERROR=OFF -DUSE_qt6=OFF \
   -DPCAP_INCLUDE_DIR=$PREFIX/include -DPCAP_LIBRARY=$PREFIX/lib/libpcap.a
 fi
-[ -x $ROOT/hosttools/lemon ] || gcc -O2 -w -o $ROOT/hosttools/lemon $ROOT/src/wireshark-4.6.9/tools/lemon/lemon.c
-ninja -C build-ws -j6 tshark dumpcap capinfos editcap mergecap
+ninja -C build-ws -j$JOBS tshark dumpcap capinfos editcap mergecap

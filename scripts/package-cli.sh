@@ -1,13 +1,15 @@
 #!/bin/bash
 # Package standalone CLI binaries (Android arm64, API 29+) for manual use via adb/su.
 set -euo pipefail
-source /workspace/android-wireshark/scripts/env.sh
+source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/env.sh"
 V=4.6.9
 OUTN=sharkdroid-cli-wireshark-$V-android-arm64
 STAGE=$ROOT/out/stage/$OUTN
 rm -rf $ROOT/out/stage && mkdir -p $STAGE/bin $STAGE/share $STAGE/licenses $STAGE/patches
 for b in tshark dumpcap capinfos editcap mergecap; do $STRIP -o $STAGE/bin/$b $ROOT/src/build-ws/run/$b; done
-cp -r /tmp/wsinst/ws/share/wireshark $STAGE/share/
+WS_INSTALL="$ROOT/out/ws-install"
+DESTDIR="$WS_INSTALL" cmake --install "$ROOT/src/build-ws"
+cp -r "$WS_INSTALL/ws/share/wireshark" "$STAGE/share/"
 cp $ROOT/helper/wsexec $STAGE/bin/wsexec
 cp $ROOT/src/wireshark-4.6.9/COPYING $STAGE/licenses/wireshark-COPYING
 cp $ROOT/src/libpcap-1.11.0/LICENSE $STAGE/licenses/libpcap-LICENSE
@@ -19,7 +21,7 @@ cp $ROOT/src/pcre2-10.49/LICENCE.md $STAGE/licenses/pcre2-LICENCE.md 2>/dev/null
 cp $ROOT/src/libxml2-2.15.4/Copyright $STAGE/licenses/libxml2-Copyright
 cp $ROOT/src/libffi-3.8.0/LICENSE $STAGE/licenses/libffi-LICENSE
 cp $ROOT/patches/*.patch $STAGE/patches/
-cp $ROOT/out/SOURCES.txt $STAGE/ 2>/dev/null || true
+cp "$ROOT/SOURCES.txt" "$STAGE/"
 cat > $STAGE/ws.sh <<'SH'
 #!/system/bin/sh
 # Usage (as root):  sh ws.sh dumpcap -D   |   sh ws.sh tshark -r file.pcapng

@@ -150,7 +150,21 @@ The app lives in `app-project/` and is built with `gradle assembleRelease`. It i
 - Android SDK platform 37
 - NDK r27c
 
-Before building the app, run `scripts/copy-jnilibs.sh` to put the compiled tshark / dumpcap into `jniLibs`. tshark is larger than 100 MB, so it is not in git.
+Prepare and build the native tools from the pinned upstream sources:
+
+```bash
+export NDK=/path/to/android-ndk-r27c
+python3 scripts/prepare-sources.py
+bash scripts/build-native.sh
+cd app-project
+gradle assembleRelease
+```
+
+The host needs GCC, Make, CMake, Ninja, Meson, pkg-config, Python 3.11.4+ (with tarfile extraction filters), patch, flex and bison. Use checkout and NDK paths without whitespace. `JOBS` controls native build parallelism (default 4). The scripts derive the checkout path automatically and accept `NDK`, `ANDROID_NDK_HOME` or `ANDROID_NDK`.
+
+`prepare-sources.py` verifies SHA256 pins from `SOURCES.txt` before extraction and applies the tracked patches. `--offline` uses archives already in `dl/`; `--discard-archives` removes them after preparation for F-Droid source scanning. `build-native.sh` compiles the gettext stub, dependencies, host Lemon, Wireshark and helpers, then copies freshly built native files into `jniLibs`. tshark is larger than 100 MB, so it is not in git.
+
+See [F-Droid submission notes](fdroid/README.md) for the draft build recipe and validation status.
 
 Release signing is read from an untracked properties file that the `SHARKDROID_KEYSTORE_PROPS` environment variable points to. Without that file, the release APK is left unsigned.
 
