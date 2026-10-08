@@ -1,0 +1,1 @@
+SharkDroid 1.1.0-ws4.6.9 includes the Wireshark 4.6.9 capture and dissection tools for arm64 Android devices.

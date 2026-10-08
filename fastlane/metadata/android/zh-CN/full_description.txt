@@ -1,0 +1,24 @@
+SharkDroid 将 Wireshark 的 dumpcap 和 tshark 工具带到 Android，并提供 Material 3 界面。
+
+主要功能：
+• 从 Wi-Fi、蜂窝移动网络、VPN、回环等可用网络接口抓包。
+• 使用 BPF 抓包过滤器和 Wireshark 显示过滤器。
+• 查看数据包列表、可展开的协议树和十六进制字节。
+• 追踪 TCP/UDP 流，查看协议和会话统计。
+• 打开 pcap/pcapng 文件，保存、导出和分享抓包文件。
+• 通过前台服务在后台持续抓包。
+• 支持浅色、深色主题、动态配色，以及英文和简体中文。
+• 通过已授权的 USB adb 连接将抓包数据传到电脑上的 Wireshark。
+
+运行要求：
+Android 10 或更高版本，arm64-v8a 设备。实时抓包需要 root 权限；打开已有抓包文件不需要 root。
+
+隐私：
+应用没有 INTERNET 权限，没有广告、分析或遥测。抓包文件保存在应用私有目录中，仅在主动导出或分享时离开应用。tshark 使用数字地址，不进行反向 DNS 查询。
+
+限制：
+不支持 Wi-Fi 监听模式。没有必要的密钥时，无法读取 TLS/QUIC 加密的应用内容。部分桌面版 Wireshark 可选功能不可用。
+
+截图使用演示数据展示应用界面。
+
+SharkDroid 是独立项目，与 Wireshark Foundation 无关联，也未经其背书。Wireshark 名称和鲨鱼鳍标志是 Wireshark Foundation 的商标。

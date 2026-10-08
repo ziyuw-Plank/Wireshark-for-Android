@@ -1,0 +1,1 @@
+SharkDroid 1.1.0-ws4.6.9 包含适用于 arm64 Android 设备的 Wireshark 4.6.9 抓包和协议解析工具。
