@@ -6,7 +6,7 @@ SharkDroid 把 **Wireshark 4.6.9**（2026-09 发布的最新稳定版，包含�
 
 > Wireshark 官方没有 Android 版。这里没有移植桌面版的 Qt 图形界面。包列表、协议树和十六进制视图是 SharkDroid 自己的界面，但所有解析结果都来自真正的 tshark。
 
-**状态：预发布版。** 命令行工具已在 Android 模拟器上验证过。App 界面已通过 JVM 截图测试验证，但还没有在真机上运行过，欢迎反馈。
+**状态：正式版。** 命令行工具已在 Android 模拟器上验证过；App 已在 Android 真机上测试，运行正常。欢迎反馈。
 
 <table>
   <tr><td align="center"><img src="docs/screenshots/01_main_light.png" width="240" alt="包列表（浅色）"><br><sub>包列表（浅色）</sub></td><td align="center"><img src="docs/screenshots/02_main_dark.png" width="240" alt="包列表（深色）"><br><sub>包列表（深色）</sub></td><td align="center"><img src="docs/screenshots/04_interface_sheet.png" width="240" alt="选择接口"><br><sub>选择接口</sub></td><td align="center"><img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="显示过滤器"><br><sub>显示过滤器</sub></td></tr>
