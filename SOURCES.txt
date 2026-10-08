@@ -1,0 +1,30 @@
+SharkDroid — pinned upstream sources (all verified on 2026-10-08)
+
+wireshark-4.6.9.tar.xz             https://www.wireshark.org/download/src/all-versions/wireshark-4.6.9.tar.xz  (GPG: SIGNATURES-4.6.9.txt, Gerald Combs key 5A5ADBA7DBEA6C3F87224F1982244A78E6FEAEEA, Good signature)
+libpcap-1.11.0.tar.xz              https://www.tcpdump.org/release/libpcap-1.11.0.tar.xz  (GPG .sig, Tcpdump Group key 1F166A5742ABB9E0249A8D30E089DEF1D9C15D0D, Good signature)
+glib-2.88.3.tar.xz                 https://download.gnome.org/sources/glib/2.88/glib-2.88.3.tar.xz  (matches GNOME .sha256sum)
+libxml2-2.15.4.tar.xz              https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.4.tar.xz  (matches GNOME .sha256sum)
+libgcrypt-1.12.4.tar.bz2           https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.12.4.tar.bz2  (GPG .sig: Werner Koch 6DAA6E64A76D2840571B4902528897B826403ADA + NIIBE Yutaka AC8E115BF73E2D8D47FA9908E98E9B2D19C6C8BD, Good)
+libgpg-error-1.61.tar.bz2          https://gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.61.tar.bz2  (GPG .sig, same GnuPG release keys, Good)
+c-ares-1.34.8.tar.gz               https://github.com/c-ares/c-ares/releases/download/v1.34.8/c-ares-1.34.8.tar.gz  (GPG .asc, Brad House DA7D64E4C82C6294CB73A20E22E3D13B5411B7CA, Good)
+pcre2-10.49.tar.bz2                https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.49/pcre2-10.49.tar.bz2  (GPG .sig, Nicholas Wilson A95536204A3BB489715231282A98E77EB6F24CA8, Good)
+libffi-3.8.0.tar.gz                https://github.com/libffi/libffi/releases/download/v3.8.0/libffi-3.8.0.tar.gz  (official GitHub release; upstream publishes no signature — SHA256 pinned below)
+android-ndk-r27c-linux.zip         https://dl.google.com/android/repository/android-ndk-r27c-linux.zip  (SHA1 matches Google repository2-3.xml: 090e8083a715fdb1a3e402d0763c388abb03fb4e)
+
+SHA256:
+d062d416a1ab3a49975aafe3a671c882dde0562ccd71b078808ceb59d465fc0f  wireshark-4.6.9.tar.xz
+9237f5bae9dcf3a91823d9963ec43b7c0e2e3374ef2ad57d92c8cd39530f4723  libpcap-1.11.0.tar.xz
+ab24d24e698dfa1e408b7bcdb508f4aafc906185a8b8ce72fdf79bbbdc9b383b  glib-2.88.3.tar.xz
+98087fd181d9070724f3fbc65c7377db03038eb92bd882374daff44940138821  libxml2-2.15.4.tar.xz
+d77f68f48879510e79a2f65977ccc68981781ea0923e5bdffac2a193ea3d660e  libgcrypt-1.12.4.tar.bz2
+7a85413f2bc354f4f8aa832b718af122e48965e9e0eb9012ee659c13c6385c93  libgpg-error-1.61.tar.bz2
+c222b6d681096f9444d2c4863d2c1174019e27cacca0a4a5c114d36dd7d7bf78  c-ares-1.34.8.tar.gz
+53c156e1ba416a20da8e65395daa132da0d80e76910424caca3fcdae7831d384  pcre2-10.49.tar.bz2
+7da3e2d9a171eb0a038f592ecad3ff2bb2550f3496d87b3b29ad0cf4430c0db4  libffi-3.8.0.tar.gz
+59c2f6dc96743b5daf5d1626684640b20a6bd2b1d85b13156b90333741bad5cc  android-ndk-r27c-linux.zip
+
+Local patches (in patches/):
+  libpcap-0001-arphrd-rawip-dlt-raw.patch
+  wireshark-0001-lemon-host-template.patch
+  wireshark-0002-bionic-net-if-include.patch
+  + stub libintl (no-op gettext, own code) in stubs/intl; libgpg-error: reuse upstream lock-obj-pub.aarch64-unknown-linux-androideabi.h for linux-android

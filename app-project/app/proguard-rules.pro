@@ -1,0 +1,1 @@
+-keep class org.sharkdroid.NativeSpawn { native <methods>; }

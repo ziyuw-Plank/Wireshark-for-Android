@@ -1,0 +1,22 @@
+--- a/cmake/modules/UseLemon.cmake	2026-10-08 10:59:44.560734400 +0800
++++ b/cmake/modules/UseLemon.cmake	2026-10-08 10:59:44.564734416 +0800
+@@ -7,6 +7,10 @@
+ 	find_program(LEMON_EXECUTABLE lemon)
+ endif()
+ 
++if(NOT DEFINED LEMON_TEMPLATE)
++	set(LEMON_TEMPLATE /usr/share/lemon/lempar.c)
++endif()
++
+ if(LEMON_EXECUTABLE)
+ 	# Use system lemon
+ 	macro(generate_lemon_file _out _in)
+@@ -17,7 +21,7 @@
+ 				${_out}.h
+ 				${_out}.out
+ 			COMMAND ${LEMON_EXECUTABLE}
+-				-T/usr/share/lemon/lempar.c
++				-T${LEMON_TEMPLATE}
+ 				-d.
+ 				${_in}
+ 			DEPENDS

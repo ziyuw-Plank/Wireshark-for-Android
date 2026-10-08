@@ -1,0 +1,30 @@
+# Build outputs
+build/
+.gradle/
+.kotlin/
+*.apk
+*.aab
+*.so
+*.o
+*.a
+local.properties
+# Native binaries are produced by scripts/copy-jnilibs.sh (tshark is >100 MB) - never commit
+app-project/app/src/main/jniLibs/
+# Gradle wrapper binaries are not committed (use Gradle 9.6.0, see README)
+app-project/gradle/wrapper/gradle-wrapper.jar
+# Upstream downloads / build trees
+/dl/
+/src/
+/prefix/
+/hosttools/
+/out/
+/publish/
+# Secrets - NEVER commit
+keys/
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+keystore.properties
+signing.properties

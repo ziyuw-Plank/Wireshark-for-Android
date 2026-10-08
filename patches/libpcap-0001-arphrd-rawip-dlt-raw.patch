@@ -1,0 +1,29 @@
+--- a/pcap-linux.c
++++ b/pcap-linux.c
+@@ -2042,6 +2042,10 @@
+  *
+  *  Returns 0 on success or a PCAP_ERROR_ value on error.
+  */
++#ifndef ARPHRD_RAWIP
++#define ARPHRD_RAWIP	519	/* Raw IP, Linux >= 4.14 */
++#endif
++
+ static int map_arphrd_to_dlt(pcap_t *handle, int arptype,
+ 			     const char *device, int cooked_ok)
+ {
+@@ -2395,6 +2399,15 @@
+ 		 */
+ 		handle->linktype = DLT_RAW;
+ 		break;
++
++	case ARPHRD_RAWIP:
++		/*
++		 * Raw IP devices (e.g. Qualcomm rmnet_data* cellular
++		 * interfaces on Android): no link-layer header, packets
++		 * begin with an IPv4/IPv6 header, so use DLT_RAW.
++		 */
++		handle->linktype = DLT_RAW;
++		break;
+ 
+ 	case ARPHRD_IEEE802154:
+ 		handle->linktype = DLT_IEEE802_15_4_NOFCS;

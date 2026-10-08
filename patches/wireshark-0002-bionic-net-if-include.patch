@@ -1,0 +1,19 @@
+--- a/capture/capture-pcap-util.c
++++ b/capture/capture-pcap-util.c
+@@ -45,6 +45,7 @@
+ #if defined(__linux__)
+ 
+ #include <sys/ioctl.h>
++#include <net/if.h> /* struct ifreq; not pulled in implicitly on Android/bionic */
+ 
+ /*
+  * If we're building for a Linux version that supports bonding,
+@@ -55,7 +56,7 @@
+ #include <linux/sockios.h>
+ #endif
+ 
+-#ifdef HAVE_LINUX_IF_BONDING_H
++#if defined(HAVE_LINUX_IF_BONDING_H) || defined(__ANDROID__)
+ #include <linux/if_bonding.h>
+ #endif
+ 
