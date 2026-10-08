@@ -8,16 +8,12 @@ SharkDroid brings the capture and dissection core of **Wireshark 4.6.9** (the la
 
 **Status: pre-release.** The command-line tools have been verified on an Android emulator. The app's UI has been verified with JVM screenshot tests, but it has not yet been run on a real phone. Feedback is welcome.
 
-<p>
-<img src="docs/screenshots/01_main_light.png" width="240" alt="Packet list (light)">
-<img src="docs/screenshots/02_main_dark.png" width="240" alt="Packet list (dark)">
-<img src="docs/screenshots/08_packet_detail.png" width="240" alt="Packet detail with protocol tree and bytes">
-</p>
-<p>
-<img src="docs/screenshots/04_interface_sheet.png" width="240" alt="Interface picker">
-<img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="Display filter with validation, history and suggestions">
-<img src="docs/screenshots/11_statistics.png" width="240" alt="Statistics">
-</p>
+<table>
+  <tr><td align="center"><img src="docs/screenshots/01_main_light.png" width="240" alt="Packet list (light)"><br><sub>Packet list (light)</sub></td><td align="center"><img src="docs/screenshots/02_main_dark.png" width="240" alt="Packet list (dark)"><br><sub>Packet list (dark)</sub></td><td align="center"><img src="docs/screenshots/04_interface_sheet.png" width="240" alt="Interface picker"><br><sub>Interface picker</sub></td><td align="center"><img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="Display filter"><br><sub>Display filter</sub></td></tr>
+  <tr><td align="center"><img src="docs/screenshots/08_packet_detail.png" width="240" alt="Packet detail"><br><sub>Packet detail</sub></td><td align="center"><img src="docs/screenshots/10_saved_captures.png" width="240" alt="Saved captures"><br><sub>Saved captures</sub></td><td align="center"><img src="docs/screenshots/11_statistics.png" width="240" alt="Statistics"><br><sub>Statistics</sub></td><td align="center"><img src="docs/screenshots/12_settings.png" width="240" alt="Settings"><br><sub>Settings</sub></td></tr>
+</table>
+
+<sub>Screenshots use demo data (rendered by the JVM screenshot tests), not a real capture.</sub>
 
 ## Download
 

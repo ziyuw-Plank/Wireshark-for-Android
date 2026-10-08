@@ -8,16 +8,12 @@ SharkDroid 把 **Wireshark 4.6.9**（2026-09 发布的最新稳定版，包含�
 
 **状态：预发布版。** 命令行工具已在 Android 模拟器上验证过。App 界面已通过 JVM 截图测试验证，但还没有在真机上运行过，欢迎反馈。
 
-<p>
-<img src="docs/screenshots/01_main_light.png" width="240" alt="包列表（浅色）">
-<img src="docs/screenshots/02_main_dark.png" width="240" alt="包列表（深色）">
-<img src="docs/screenshots/08_packet_detail.png" width="240" alt="包详情：协议树和字节">
-</p>
-<p>
-<img src="docs/screenshots/04_interface_sheet.png" width="240" alt="选择接口">
-<img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="显示过滤器：校验、历史和建议">
-<img src="docs/screenshots/11_statistics.png" width="240" alt="统计">
-</p>
+<table>
+  <tr><td align="center"><img src="docs/screenshots/01_main_light.png" width="240" alt="包列表（浅色）"><br><sub>包列表（浅色）</sub></td><td align="center"><img src="docs/screenshots/02_main_dark.png" width="240" alt="包列表（深色）"><br><sub>包列表（深色）</sub></td><td align="center"><img src="docs/screenshots/04_interface_sheet.png" width="240" alt="选择接口"><br><sub>选择接口</sub></td><td align="center"><img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="显示过滤器"><br><sub>显示过滤器</sub></td></tr>
+  <tr><td align="center"><img src="docs/screenshots/08_packet_detail.png" width="240" alt="包详情"><br><sub>包详情</sub></td><td align="center"><img src="docs/screenshots/10_saved_captures.png" width="240" alt="已保存的抓包"><br><sub>已保存的抓包</sub></td><td align="center"><img src="docs/screenshots/11_statistics.png" width="240" alt="统计"><br><sub>统计</sub></td><td align="center"><img src="docs/screenshots/12_settings.png" width="240" alt="设置"><br><sub>设置</sub></td></tr>
+</table>
+
+<sub>截图使用演示数据（由 JVM 截图测试渲染），不是真实抓包。</sub>
 
 ## 下载
 
