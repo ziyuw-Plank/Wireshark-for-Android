@@ -1,63 +1,84 @@
-> **English summary:** SharkDroid is a port of Wireshark 4.6.9 (`dumpcap` + `tshark` with all dissectors) to rooted arm64 Android (API 29+), plus a small phone UI: live capture on Wi‑Fi / cellular (`rmnet_data*`, raw IP) / VPN / `any`, BPF capture filters, Wireshark display filters, packet detail tree + hex view, statistics, follow stream, and pcapng export/share. Only `dumpcap` runs as root (via a tiny validating helper, no shell); `tshark` runs in an isolated sandbox process; the app has no INTERNET permission. Everything is built from verified official upstream sources (see `SOURCES.txt`). **Status: pre-release.** The CLI tools are verified on an Android emulator; the app has not yet been tested on a real device. Binaries are on the [Releases](../../releases) page. License: GPL-2.0-or-later.
+**English** | [简体中文](README.zh-CN.md)
 
-# SharkDroid：Android 版 Wireshark（小米 14 Pro / arm64，需要 root）
+# SharkDroid: Wireshark for rooted Android (arm64)
 
-这是 **Wireshark 4.6.9**（2026-09 发布的最新稳定版，含官方截至该版本的全部安全修复）里抓包和解析的核心（`dumpcap` + `tshark`，全部协议解析器），用 Android NDK r27c 交叉编译到 arm64-v8a（API 29+），外面套了一个手机界面 App。另外附带可以通过 adb / su 手动使用的命令行版。
+SharkDroid brings the capture and dissection core of **Wireshark 4.6.9** (the latest stable release, September 2026, with every upstream security fix up to that version) to Android: `dumpcap` and `tshark` with all protocol dissectors, cross-compiled with Android NDK r27c for arm64-v8a (Android 10 / API 29 and later). It comes with a phone-friendly Material 3 app, plus a command-line bundle you can use over adb / su.
 
-> Wireshark 官方没有 Android 版。这里没有移植桌面 Qt 图形界面，手机上的包列表、详情树和十六进制视图是本 App 自己做的，解析结果全部来自真正的 tshark。
+> Wireshark has no official Android version. The desktop Qt GUI is not ported. The packet list, protocol tree and hex view are SharkDroid's own UI, but every dissection result comes from the real tshark.
 
-## 下载（见 Releases 页面）
+**Status: pre-release.** The command-line tools have been verified on an Android emulator. The app's UI has been verified with JVM screenshot tests, but it has not yet been run on a real phone. Feedback is welcome.
 
-仓库里只有源码，编译好的 APK 和命令行包在 GitHub Releases 里。
+<p>
+<img src="docs/screenshots/01_main_light.png" width="240" alt="Packet list (light)">
+<img src="docs/screenshots/02_main_dark.png" width="240" alt="Packet list (dark)">
+<img src="docs/screenshots/08_packet_detail.png" width="240" alt="Packet detail with protocol tree and bytes">
+</p>
+<p>
+<img src="docs/screenshots/04_interface_sheet.png" width="240" alt="Interface picker">
+<img src="docs/screenshots/06_display_filter_valid.png" width="240" alt="Display filter with validation, history and suggestions">
+<img src="docs/screenshots/11_statistics.png" width="240" alt="Statistics">
+</p>
 
-| 文件 | 说明 |
+## Download
+
+The repository only contains source code. The APK and the command-line bundle are on the [Releases](../../releases) page.
+
+| File | What it is |
 |---|---|
-| `SharkDroid-1.0.0-wireshark-4.6.9-arm64-release.apk` | App，自签名 release 版（推荐安装这个） |
-| `SharkDroid-1.0.0-wireshark-4.6.9-arm64-debug.apk` | 同样的代码，debug 签名（调试用，和 release 不能互相覆盖安装） |
-| `sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz` | 命令行版：`tshark`、`dumpcap`、`capinfos`、`editcap`、`mergecap` 和数据文件 |
-| `SOURCES.txt` | 所有上游源码的下载地址、签名或校验结果、SHA256 和本地补丁列表 |
-| `SHA256SUMS` | 本目录所有交付文件的校验值 |
-| `sharkdroid-source.tar.gz` | 本项目全部源码的快照（和本仓库内容相同） |
+| `SharkDroid-<version>-wireshark-4.6.9-arm64-release.apk` | The app, self-signed release build (install this one) |
+| `sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz` | Command-line bundle: `tshark`, `dumpcap`, `capinfos`, `editcap`, `mergecap` and data files |
+| `SOURCES.txt` | Download URL, signature / checksum verification, SHA256 and local patches for every upstream source |
+| `SHA256SUMS` | Checksums of the release files |
+| `sharkdroid-source.tar.gz` | Snapshot of this repository at the release tag |
 
-## 安装 App
+The release APK is signed with a self-signed certificate, SHA-256 `72590f3238296885b7d1a2b9b600594350e5ea8477277e45fe4222985196f157`. You can check it with `apksigner verify --print-certs`. Every release is signed with the same certificate, so newer versions install over older ones.
 
-1. 手机：设置 → 更多设置 → 开发者选项 → 打开 USB 调试（只是为了用 adb 安装；直接把 APK 传到手机上点开安装也可以）。
-2. 电脑：`adb install SharkDroid-1.0.0-wireshark-4.6.9-arm64-release.apk`
-   - HyperOS 可能弹出“安全检查 / 纯净模式”提示，选择继续安装即可（App 没有联网权限）。
-3. 打开 SharkDroid。第一次打开时 App 会请求超级用户权限：
-   - **Magisk**：弹出授权窗口时点“允许”（建议选“永久”）。
-   - **KernelSU / APatch**：在管理器 App 的超级用户列表里给 SharkDroid 打开 root 开关，然后回到 SharkDroid 点 ↻ 重试。
-   - 想关掉每次授权的提示：在 Magisk 设置里把 SharkDroid 的通知 / 日志关掉。
-4. Android 13 及以上开始抓包时，会请求“通知”权限，用来显示“正在抓包 / 停止”通知。拒绝也能抓包。
+## Installing the app
 
-不需要 `setenforce 0`，也不需要改 SELinux 策略：dumpcap 在 Magisk/KernelSU 自带的 su 域里运行，这个域本来就允许抓包。
+1. On the phone, enable USB debugging in Developer options. This is only needed for adb; you can also copy the APK to the phone and open it there.
+2. On the computer: `adb install SharkDroid-<version>-wireshark-4.6.9-arm64-release.apk`
+   - Some ROMs show a "security check" screen before installing. Choose to continue (the app has no internet permission).
+3. Open SharkDroid. The first time, it asks for superuser access:
+   - **Magisk**: tap "Allow" in the prompt ("Forever" is recommended).
+   - **KernelSU / APatch**: enable root for SharkDroid in the manager app, then go back to SharkDroid and tap **Retry** on the banner.
+4. On Android 13 and later, the app asks for the notification permission when you start a capture. It is used for the "capturing" notification with its **Stop** button. Capturing works without it.
 
-## 使用
+You don't need `setenforce 0` or any SELinux policy change: dumpcap runs in the su domain of Magisk / KernelSU, which already allows packet capture.
 
-- **接口**（顶部下拉框，● = 已启用且有 IP，○ = 未启用）：
-  - `wlan0`：Wi‑Fi（以太网帧）
-  - `rmnet_data0…N`：蜂窝数据（高通平台，原始 IP，**没有以太网头**，按 DLT_RAW 解析）。手机开着流量时，活跃的通常是有 IP 的那个 `rmnet_dataX`
-  - `any`：所有接口一起抓（Linux cooked SLL 格式）
-  - `lo`：本机回环；`tun0`：开着 VPN 时的隧道（看到的是 VPN 里面的明文 IP 包）；`p2p0`、`rndis0`、`ncm0`、`bt-pan`：Wi‑Fi 直连 / USB 共享 / 蓝牙共享
-  - `rmnet_ipa0`、`r_rmnet_data*` 是底层带 QMAP 头的接口，一般不要选
-  - App 默认选：Wi‑Fi 已连接就选 `wlan0`，没连就选正在使用的 `rmnet_data*`，都没有就选 `any`
-- **捕获过滤器**（BPF，开始前设置），例：`tcp port 443`、`host 1.2.3.4`、`udp port 53`、`not port 5555`
-- **显示过滤器**（Wireshark 语法，随时可以改，点“应用”后从头重新解析），例：`dns`、`tls.handshake.extensions_server_name contains "qq"`、`http.request`、`ip.addr == 1.2.3.4`、`tcp.analysis.flags`
-- 点一个包：协议详情树 + 十六进制视图（点树里的字段会高亮对应字节）。长按字段：设为显示过滤器 / 复制。右上角菜单：追踪 TCP/UDP 流。
-- 主界面菜单：已保存的抓包（打开、导出、分享、删除）、导出当前文件、分享、**统计**（协议分级、IPv4/IPv6/TCP/UDP 会话、端点、专家信息、DNS 查询列表、TLS SNI 列表、HTTP 请求、IO 统计）、推送到电脑、诊断（显示 root 状态、沙箱状态、`dumpcap -D`、最近一次 dumpcap 输出）。
-- “打开”：通过系统文件选择器打开已有的 pcap / pcapng（也支持 .gz）。打开文件不需要 root。
-- 抓包时可以切到别的 App 去产生流量。前台服务会让抓包继续，通知栏里有“停止”按钮。
-- 抓包文件保存在 **App 私有目录**（`/data/data/org.sharkdroid/files/captures/`），只有你点“导出”（用系统“另存为”，可选“下载”目录）或“分享”时才会离开 App。单个文件到 2 GiB 自动停止。
+## Using it
 
-## 推送到电脑上的 Wireshark 实时查看
+- **Interface**: tap the interface card at the top. The picker shows each interface's type (Wi-Fi, Cellular, VPN, Loopback, Any, …) and state (up, no address, down):
+  - `wlan0`: Wi-Fi (Ethernet frames)
+  - `rmnet_data0…N`: mobile data on Qualcomm devices (raw IP, **no Ethernet header**, dissected as DLT_RAW). With mobile data on, the active one is usually the `rmnet_dataX` that has an IP address. MediaTek devices use `ccmni*`.
+  - `any`: all interfaces at once (Linux cooked SLL)
+  - `lo`: loopback. `tun0`: the VPN tunnel when a VPN is active (you see the plain IP packets inside the VPN). `p2p0`, `rndis0`, `ncm0`, `bt-pan`: Wi-Fi Direct, USB tethering, Bluetooth tethering.
+  - `rmnet_ipa0` and `r_rmnet_data*` are lower-level interfaces with QMAP headers; you normally don't want them.
+  - The default choice is `wlan0` if Wi-Fi is connected, otherwise the active `rmnet_data*`, otherwise `any`.
+- **Start capture**: the large button at the bottom right opens the "New capture" sheet. There you can set an optional **capture filter** (BPF, e.g. `tcp port 443`, `host 1.2.3.4`, `udp port 53`, `not port 5555`) or pick one of the suggestions. While capturing, the button turns red and shows **Stop** with the elapsed time. The bar above the list shows packets, data and duration.
+- **Display filter**: the search bar uses Wireshark syntax, e.g. `dns`, `tls.handshake.extensions_server_name contains "example"`, `http.request`, `ip.addr == 1.2.3.4`, `tcp.analysis.flags`. As you type, tshark itself checks the filter and the bar turns green (valid) or red (invalid, with tshark's error message), just like in Wireshark. Recent filters and common suggestions are listed below the bar. Press search on the keyboard to apply; the file is then re-dissected from the start.
+- **Packet list**: protocol colour coding inspired by Wireshark's colouring rules, with monospace numbers. The list follows new packets automatically. Scroll up to pause; tap the arrow button or the auto-scroll toggle to resume. Long-press a packet to filter on its protocol or addresses, or to copy the row.
+- **Packet detail**: tap a packet to see the expandable protocol tree, with the packet bytes in a bottom sheet (drag it up for more). Tapping a field highlights its bytes. Long-press a field for **Apply as filter**, **Copy as filter**, **Copy value** and **Copy line**. The top bar has **Follow TCP/UDP stream**.
+- **Overflow menu (⋮)**:
+  - **Open file**: open a pcap / pcapng file through the system picker (no root needed).
+  - **Saved captures**: open, share, export or delete. Swipe left to delete; **Undo** is available in the snackbar.
+  - **Statistics**: summary cards, protocol distribution, and tshark reports (protocol hierarchy, IPv4/IPv6/TCP/UDP conversations, endpoints, expert info, DNS queries, TLS SNI, HTTP requests, DNS statistics, I/O per second).
+  - **Export**, **Share**, **Clear packet list**
+  - **Stream to desktop Wireshark**
+  - **Diagnostics**: root status, sandbox status, `dumpcap -D`, the interface table and the last dumpcap output.
+  - **Settings**: theme (system / light / dark), Material You dynamic color, snapshot length, auto-scroll, plus the open-source licenses.
+- You can switch to other apps while capturing. A foreground service keeps the capture running and the notification has a **Stop** button. Pressing back never stops a running capture.
+- Captures are stored in **app-private storage** (`/data/data/org.sharkdroid/files/captures/`). They only leave the app when you **export** them (system "Save as") or **share** them. A capture stops automatically at 2 GiB.
+- The UI is available in English and Simplified Chinese and follows the system language (Android 13+ also lets you set a per-app language).
 
-用 USB 连电脑并打开 USB 调试，在电脑上运行（App 菜单“推送到电脑 Wireshark”会给出带本机实际路径的命令，可以一键复制）：
+## Live view in Wireshark on your computer
+
+Connect the phone by USB with USB debugging enabled and run this on the computer. **Stream to desktop Wireshark** in the app gives you the exact command with the real path, ready to copy:
 
 ```bash
-adb exec-out "su -c '<App 原生库目录>/libdumpcap.so -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
+adb exec-out "su -c '<app native library dir>/libdumpcap.so -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
 ```
 
-不装 App、只用命令行版：
+With only the command-line bundle (no app):
 
 ```bash
 adb push sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz /data/local/tmp/
@@ -65,52 +86,88 @@ adb shell "cd /data/local/tmp && tar xzf sharkdroid-cli-wireshark-4.6.9-android-
 adb exec-out "su -c '/data/local/tmp/sharkdroid-cli-wireshark-4.6.9-android-arm64/bin/dumpcap -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
 ```
 
-Windows 下 PowerShell 的管道会破坏二进制数据，请在 **cmd.exe** 里运行，并把 `wireshark` 换成 `"C:\Program Files\Wireshark\Wireshark.exe"`。数据只走已授权的 adb 通道，App 不会开放任何网络端口。
+On Windows, PowerShell pipes corrupt binary data. Use **cmd.exe** and replace `wireshark` with `"C:\Program Files\Wireshark\Wireshark.exe"`. Data only travels over the authorized adb connection; the app never opens a network port.
 
-## 命令行版用法（adb shell → su）
+## Command-line bundle (adb shell → su)
 
 ```sh
 su
 cd /data/local/tmp/sharkdroid-cli-wireshark-4.6.9-android-arm64
-sh ws.sh dumpcap -D                                        # 列出接口
+sh ws.sh dumpcap -D                                        # list interfaces
 sh ws.sh dumpcap -i wlan0 -a duration:30 -w /data/local/tmp/a.pcapng
 sh ws.sh tshark -n -r /data/local/tmp/a.pcapng -Y dns
-sh ws.sh tshark -n -i rmnet_data0 -f "udp port 53"         # tshark 直接抓（会调用同目录的 dumpcap）
+sh ws.sh tshark -n -i rmnet_data0 -f "udp port 53"         # tshark captures directly (runs dumpcap from the same dir)
 ```
 
-二进制只依赖系统 `libc.so`（其余依赖都已静态链接）；`ws.sh` 负责设置 `WIRESHARK_DATA_DIR`。用完可以 `rm -rf /data/local/tmp/sharkdroid-cli-*`。
+The binaries only depend on the system `libc.so`; everything else is statically linked. `ws.sh` sets `WIRESHARK_DATA_DIR`. Clean up with `rm -rf /data/local/tmp/sharkdroid-cli-*`.
 
-## 已知限制
+## Known limitations
 
-- **监听模式（monitor mode）**：不支持。小米 14 Pro 用的是高通 FastConnect 7800 的原厂驱动，不提供标准的 nl80211 监听模式。我们编的 libpcap 没有带 libnl，App 也不会去改驱动参数。网上有 `echo 4 > /sys/module/wlan/parameters/con_mode` 之类的高通私有方法，但会断开 Wi‑Fi，可能要重启才能恢复，我们没有测试，也不推荐。所以 `wlan0` 抓到的是本机自己收发的以太网帧，不是空口 802.11 帧。
-- **蜂窝接口**：`rmnet_data*` 是原始 IP 接口（ARPHRD_RAWIP）。我们给 libpcap 加了补丁，让它按 DLT_RAW 打开，这样 BPF 过滤器和解析都正确。这条代码在电脑上做过审查，但模拟器里没有 rmnet 设备，**还没在真机蜂窝网络上跑过**。如果你遇到问题，可以选 `any` 接口作为备用方案（cooked 格式，同样能解析，还带方向信息）。
-- **TLS/QUIC 加密流量**只能看到握手信息（SNI、证书等），看不到内容：手机上拿不到浏览器或 App 的密钥日志。没有编进 GnuTLS / Kerberos / Lua / nghttp2 / zstd / lz4 / brotli / snappy 等可选依赖，相应的解密、解压和 Lua 插件功能不可用。
-- 没有 Qt 图形界面，也没有 IO 图表这类图形化统计，统计结果都以 tshark 文本形式显示。
-- 包详情是单遍解析（只读到该包为止），所以“[Response in: N]”这类指向后面包的链接可能不显示。显示过滤器在实时抓包时会从头重新解析整个文件。
-- 列表最多显示 100 万行，超过的部分请导出到电脑分析。
-- 第一次打开详情或统计时要启动一次 tshark（加载约 3000 个解析器），手机上大约需要 1 秒。
-- 只支持 arm64-v8a（小米 14 Pro、近几年的高通/联发科手机都是）。
+- **Monitor mode** is not supported. Phone Wi-Fi chips use vendor drivers that don't offer standard nl80211 monitor mode. Our libpcap is built without libnl and the app never touches driver parameters. Vendor-specific tricks such as `echo 4 > /sys/module/wlan/parameters/con_mode` disconnect Wi-Fi and may need a reboot to recover; they are untested and not recommended. `wlan0` therefore shows the Ethernet frames the phone itself sends and receives, not over-the-air 802.11 frames.
+- **Cellular interfaces**: `rmnet_data*` are raw-IP interfaces (ARPHRD_RAWIP). A libpcap patch makes them open as DLT_RAW so BPF filters and dissection are correct. The code has been reviewed, but the emulator has no rmnet device, so it **has not been run on a real cellular connection yet**. If you hit a problem, use the `any` interface instead (cooked format, dissects fine and includes the direction).
+- **Encrypted TLS/QUIC** traffic: you see the handshake (SNI, certificates, …) but not the content, because the key logs of browsers and apps are not available on the phone. GnuTLS, Kerberos, Lua, nghttp2, zstd, lz4, brotli and snappy are not built in, so the matching decryption, decompression and Lua plugin features are unavailable.
+- There is no Qt GUI and no graphical statistics such as I/O graphs. Statistics reports are shown as tshark text.
+- Packet details come from a single pass that reads up to that packet, so links to later packets ("[Response in: N]") may be missing. Changing the display filter during a live capture re-dissects the whole file.
+- The list shows up to 1,000,000 rows; export larger captures to a computer.
+- The first detail view or statistics report starts tshark once (about 3,000 dissectors), which takes roughly a second on a phone. Display filter validation also uses tshark, so the green/red result appears after a short delay.
+- arm64-v8a only.
 
-## 安全设计
+## Security design
 
-- **源码来源**：只从官方上游下载：wireshark.org、tcpdump.org、download.gnome.org、gnupg.org、GitHub 官方 release（c-ares、PCRE2、libffi）、Google 官方 NDK。版本全部固定。有 GPG 签名的（Wireshark、libpcap、libgcrypt、libgpg-error、c-ares、PCRE2）都验证了签名；GNOME 的包对照了官方 sha256sum；NDK 对照了 Google 仓库清单里的 SHA1；libffi 上游不发布签名，只固定了 SHA256。没有使用任何第三方预编译二进制（Termux 的包也没用），全部依赖都是从源码编译的。详见 `SOURCES.txt`。
-- **最少权限**：没有 INTERNET 权限，App 完全不联网，没有统计、遥测或广告。tshark 一律带 `-n` 运行，不做 DNS 反查。只申请了 `FOREGROUND_SERVICE`、`FOREGROUND_SERVICE_SPECIAL_USE`（抓包时保持运行）和可选的 `POST_NOTIFICATIONS`。
-- **root 只给 dumpcap**：交给 `su -c` 的只有一个固定字符串，就是包管理器分配的原生库路径（经过白名单字符校验并加单引号）。接口名、过滤器等用户输入通过 stdin 以 NUL 分隔、带参数个数的格式传给 root 辅助程序 `libwsexec.so`（约 300 行 C，源码在 `helper/wsexec.c`）。它会：
-  - 校验接口名：`[A-Za-z0-9_.-]`，不超过 15 个字符，不能以 `-` 开头，并且必须真实存在于 `/sys/class/net`，所以拒绝 `rpcap://` 这类 URL；
-  - 校验捕获过滤器：只允许可打印 ASCII，最长 2048；snaplen 只能是数字且在范围内；
-  - 清空环境变量、设置 `umask 077`；
-  - 只执行和自己在同一目录、属主是 root 或 system、且不可被组和其他用户写的 `libdumpcap.so`；
-  - 用 `fork + execv` 和固定的参数数组启动 dumpcap，全程不经过 shell，也不拼接命令字符串。
-- **不可信数据在沙箱里解析**：Wireshark 解析器每年都会修一批漏洞，所以 tshark 不以 root 运行，也不以 App 自己的 UID 运行，而是放在 `android:isolatedProcess` 的隔离进程里：随机 UID、没有任何权限、读不到 App 数据，因此调用不了 su。数据通过管道或只读文件描述符交给它。即使有人用恶意 pcap 打穿了某个解析器，也拿不到 root。如果某个 ROM 的 SELinux 策略不允许隔离进程执行程序，App 会自动回退到用 App UID 运行（仍然不是 root），并在“诊断”里明确显示“沙箱不可用”。
-- **文件**：抓包写在 App 私有目录，权限 0600，不是全局可读写；只有用户主动导出或分享时才离开 App（分享用的是不导出的只读 ContentProvider 加一次性 URI 授权）。关闭了备份（`allowBackup=false`，云备份和设备迁移都排除）。
-- **组件**：只有启动器 Activity 是导出的（launcher 必须导出），其余 Activity、Service、Provider 都是 `exported=false`。App 不接收外部 Intent 传进来的文件，避免别的 App 塞恶意 pcap 进来。
-- **编译加固**：所有原生程序都是 PIE，启用了 Full RELRO（BIND_NOW）、`-fstack-protector-strong`、`_FORTIFY_SOURCE=2`、`-fstack-clash-protection`、ARM 分支保护编译选项（`-mbranch-protection=standard`，函数返回地址 PAC 签名），并按 16 KB 页对齐（兼容 Android 15）。只动态链接系统的 `libc.so`，所以能跟着系统更新拿到 bionic 的安全修复。
-- **仍然要注意**：打开来源不明的 pcap 本身就有风险（桌面版 Wireshark 也一样）；有 root 的手机安全边界取决于你的 root 管理器，建议在 Magisk/KernelSU 里只给需要的 App 授权；release APK 是自签名的，签名证书 SHA-256 见交付报告。以后升级请用同一个签名的 APK 覆盖安装。
+- **Sources**: everything comes from official upstreams only: wireshark.org, tcpdump.org, download.gnome.org, gnupg.org, official GitHub releases (c-ares, PCRE2, libffi) and Google's official NDK. All versions are pinned.
+  - GPG signatures are verified where published (Wireshark, libpcap, libgcrypt, libgpg-error, c-ares, PCRE2).
+  - GNOME tarballs are checked against the official sha256sum files.
+  - The NDK is checked against the SHA1 in Google's repository manifest.
+  - libffi publishes no signatures, so only its SHA256 is pinned.
+  - No third-party prebuilt binaries (not even Termux packages) are used; every dependency is built from source. See `SOURCES.txt`.
+- **Minimal permissions**: no INTERNET permission. The app never goes online and has no analytics, telemetry or ads. tshark always runs with `-n` (no reverse DNS). Requested permissions:
+  - `FOREGROUND_SERVICE` and `FOREGROUND_SERVICE_SPECIAL_USE`, to keep a capture running
+  - optional `POST_NOTIFICATIONS`
 
-## 自己重新编译
+  The EmojiCompat downloadable-font initializer and the exported profile-installer receiver that AndroidX would add are removed from the manifest.
+- **Root only for dumpcap**: the only string ever passed to `su -c` is a fixed path: the native library path assigned by the package manager, checked against a character whitelist and single-quoted. User input (interface name, filter) goes over stdin to the root helper `libwsexec.so` (about 300 lines of C, source in `helper/wsexec.c`), NUL-separated with an argument count. The helper:
+  - validates the interface name (`[A-Za-z0-9_.-]`, at most 15 characters, no leading `-`, must exist in `/sys/class/net`), which rejects URLs such as `rpcap://`;
+  - validates the capture filter (printable ASCII only, at most 2048 characters) and the snaplen (numeric, within range);
+  - clears the environment and sets `umask 077`;
+  - only runs a `libdumpcap.so` that sits in its own directory, is owned by root or system, and is not group- or world-writable;
+  - starts dumpcap with `fork + execv` and a fixed argument array. No shell and no command-string concatenation are involved at any point.
+- **Untrusted data is dissected in a sandbox**: Wireshark fixes a batch of dissector vulnerabilities every year. tshark therefore runs neither as root nor as the app's own UID, but in an `android:isolatedProcess` service. That process has a random UID, no permissions and no access to app data, so it can't call su. Packet data reaches it through a pipe or a read-only file descriptor, so even a malicious pcap that exploits a dissector can't get root. Display filter validation runs in the same sandbox. If a ROM's SELinux policy forbids exec from isolated processes, the app falls back to its own UID (still not root) and **Diagnostics** clearly shows "sandbox unavailable".
+- **Files**: captures are written to app-private storage with mode 0600, never world-readable or writable. They only leave the app when you export or share them; sharing uses a non-exported, read-only ContentProvider with a one-time URI grant. Backup is disabled (`allowBackup=false`, and both cloud backup and device transfer are excluded).
+- **Components**: only the launcher activity is exported (a launcher must be). All services and providers are `exported=false`. The app doesn't accept files from other apps' intents, so nobody can push a malicious pcap into it.
+- **Hardened native builds**: every native binary is built with:
+  - PIE and Full RELRO (BIND_NOW)
+  - `-fstack-protector-strong`, `_FORTIFY_SOURCE=2` and `-fstack-clash-protection`
+  - `-mbranch-protection=standard` (PAC-signed return addresses)
+  - 16 KB page alignment (Android 15 compatible)
 
-仓库里有完整脚本：`scripts/env.sh`、`build-deps-1.sh`、`build-glib.sh`、`build-deps-2.sh`、`build-wireshark.sh`、`helper/build.sh`、`package-cli.sh`，App 在 `app-project/` 下用 `gradle assembleRelease` 编译（需要 JDK 17、Gradle 9.6.0、Android SDK 36、NDK r27c；仓库不含 gradle-wrapper.jar，可用 `gradle wrapper --gradle-version 9.6.0` 自行生成）。编译 App 之前先运行 `scripts/copy-jnilibs.sh`，把编好的 tshark/dumpcap 等放进 `jniLibs`（tshark 超过 100 MB，所以不放进 git）。release 签名配置从环境变量 `SHARKDROID_KEYSTORE_PROPS` 指向的、不纳入版本控制的 properties 文件读取；没有这个文件时 release 包不签名。补丁在 `patches/` 下，一共只有 3 个很小的补丁：lemon 用宿主机模板、bionic 缺少 `<net/if.h>`、libpcap 把 ARPHRD_RAWIP 映射到 DLT_RAW。
+  The binaries only link the system `libc.so` dynamically, so they pick up bionic security fixes with system updates.
+- **Things to keep in mind**: opening a pcap of unknown origin is inherently risky (on desktop Wireshark too). On a rooted phone, the security boundary is your root manager, so only grant root to apps that need it. The release APK is self-signed (certificate SHA-256 above); always upgrade with an APK signed by the same certificate.
 
-## 许可证
+## Building from source
 
-Wireshark、dumpcap、tshark：GPL-2.0-or-later。libpcap：BSD。GLib、libgcrypt、libgpg-error：LGPL-2.1-or-later。c-ares、libffi：MIT。PCRE2：BSD。libxml2：MIT。许可证全文在 CLI 包的 `licenses/` 目录里。本项目自己的代码（App、`wsexec`、`sdnative`）以 GPL-2.0-or-later 发布，对应源码就是本仓库。上游 GPL/LGPL 组件的原始源码包作为附件放在 Release 里，下载地址和 SHA256 见 `SOURCES.txt`。
+The repository has all the scripts: `scripts/env.sh`, `build-deps-1.sh`, `build-glib.sh`, `build-deps-2.sh`, `build-wireshark.sh`, `helper/build.sh` and `package-cli.sh`.
+
+The app lives in `app-project/` and is built with `gradle assembleRelease`. It is Kotlin with Jetpack Compose and Material 3, and needs:
+
+- JDK 17
+- Gradle 9.6.0. The repository has no `gradle-wrapper.jar`; generate one with `gradle wrapper --gradle-version 9.6.0`.
+- Android SDK platform 37
+- NDK r27c
+
+Before building the app, run `scripts/copy-jnilibs.sh` to put the compiled tshark / dumpcap into `jniLibs`. tshark is larger than 100 MB, so it is not in git.
+
+Release signing is read from an untracked properties file that the `SHARKDROID_KEYSTORE_PROPS` environment variable points to. Without that file, the release APK is left unsigned.
+
+`patches/` holds just three small patches:
+
+- lemon uses the host template
+- bionic is missing `<net/if.h>`
+- libpcap maps ARPHRD_RAWIP to DLT_RAW
+
+To regenerate the UI screenshots (Robolectric + Roborazzi, fake data, no device needed):
+
+```bash
+cd app-project && gradle :app:testDebugUnitTest --tests 'org.sharkdroid.ScreenshotTest' -PscreenshotDir=$PWD/../docs/screenshots
+```
+
+"Wireshark" and the Wireshark fin logo are trademarks of the Wireshark Foundation. SharkDroid is an independent port, not affiliated with or endorsed by the Wireshark Foundation, and its icon is original artwork.

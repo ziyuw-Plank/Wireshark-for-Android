@@ -24,19 +24,22 @@ class CaptureService : Service() {
             return START_NOT_STICKY
         }
         val nm = getSystemService(NotificationManager::class.java)
-        nm.createNotificationChannel(NotificationChannel(CHANNEL, "抓包状态", NotificationManager.IMPORTANCE_LOW))
+        nm.createNotificationChannel(NotificationChannel(CHANNEL, getString(R.string.notif_channel), NotificationManager.IMPORTANCE_LOW))
         val open = PendingIntent.getActivity(this, 0, Intent(this, MainActivity::class.java),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val stop = PendingIntent.getService(this, 1, Intent(this, CaptureService::class.java).setAction(ACTION_STOP),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val iface = intent?.getStringExtra("iface") ?: ""
         val n = Notification.Builder(this, CHANNEL)
-            .setSmallIcon(android.R.drawable.presence_online)
-            .setContentTitle("SharkDroid 正在抓包")
-            .setContentText("接口：$iface")
+            .setSmallIcon(R.drawable.ic_stat_capture)
+            .setContentTitle(getString(R.string.notif_title))
+            .setContentText(getString(R.string.notif_text, iface))
             .setContentIntent(open)
             .setOngoing(true)
-            .addAction(Notification.Action.Builder(null, "停止", stop).build())
+            .setCategory(Notification.CATEGORY_SERVICE)
+            .setUsesChronometer(true)
+            .setColor(0xFF0E7C86.toInt())
+            .addAction(Notification.Action.Builder(null, getString(R.string.action_stop), stop).build())
             .build()
         startForeground(1, n, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
         return START_NOT_STICKY

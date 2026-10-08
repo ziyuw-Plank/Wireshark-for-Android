@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SharkDroid launcher background: deep-sea gradient with faint sonar rings (original artwork). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:pathData="M0,0h108v108h-108z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear"
+                android:startX="0" android:startY="0" android:endX="108" android:endY="108"
+                android:startColor="#0A2F5C" android:endColor="#0E7C86" />
+        </aapt:attr>
+    </path>
+    <path android:pathData="M54,54m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0"
+        android:strokeColor="#14FFFFFF" android:strokeWidth="1.2" android:fillColor="#00000000" />
+    <path android:pathData="M54,54m-28,0a28,28 0,1 1,56 0a28,28 0,1 1,-56 0"
+        android:strokeColor="#10FFFFFF" android:strokeWidth="1.2" android:fillColor="#00000000" />
+</vector>

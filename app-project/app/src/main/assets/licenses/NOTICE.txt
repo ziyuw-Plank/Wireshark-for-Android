@@ -1,0 +1,20 @@
+SharkDroid — Wireshark for rooted Android
+Copyright (C) 2026 ziyuw-Plank and contributors
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the Free
+Software Foundation; either version 2 of the License, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+more details.
+
+Source code: https://github.com/ziyuw-Plank/Wireshark-for-Android
+The exact upstream source tarballs of the bundled GPL/LGPL components are
+attached to each GitHub release.
+
+"Wireshark" and the Wireshark fin logo are trademarks of the Wireshark
+Foundation. SharkDroid is an independent port and is not affiliated with or
+endorsed by the Wireshark Foundation; its icon is original artwork.

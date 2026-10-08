@@ -1,5 +1,7 @@
 package org.sharkdroid
 
+enum class IfaceType { ANY, WIFI, WIFI_DIRECT, CELLULAR, VPN, LOOPBACK, USB, BLUETOOTH, ETHERNET, VIRTUAL, MONITOR, OTHER }
+
 /** One network interface as reported by the root helper's `list` command. */
 data class IfaceInfo(
     val name: String,
@@ -13,29 +15,26 @@ data class IfaceInfo(
     val isUp: Boolean get() = (flags and 0x1) != 0 && operState != "down"
     val hasAddr: Boolean get() = addrs.any { !it.startsWith("fe80") }
 
-    val kind: String
+    val type: IfaceType
         get() = when {
-            name == "any" -> "全部接口 (Linux cooked)"
-            arpType == 772 -> "回环"
-            wireless || name.startsWith("wlan") -> if (name.startsWith("p2p") || name.contains("aware")) "Wi‑Fi 直连" else "Wi‑Fi"
-            name.startsWith("p2p") -> "Wi‑Fi 直连"
+            name == "any" -> IfaceType.ANY
+            arpType == 772 -> IfaceType.LOOPBACK
+            wireless || name.startsWith("wlan") -> if (name.startsWith("p2p") || name.contains("aware")) IfaceType.WIFI_DIRECT else IfaceType.WIFI
+            name.startsWith("p2p") -> IfaceType.WIFI_DIRECT
             name.startsWith("rmnet") || name.startsWith("ccmni") || name.startsWith("seth") ||
-                name.startsWith("rmnet_data") || arpType == 519 -> "蜂窝 (原始 IP)"
-            name.startsWith("tun") || arpType == 65534 -> "VPN / 隧道"
-            name.startsWith("rndis") || name.startsWith("ncm") || name.startsWith("usb") -> "USB 共享"
-            name.startsWith("bt-pan") || name.startsWith("bnep") -> "蓝牙共享"
+                name.startsWith("rmnet_data") || arpType == 519 -> IfaceType.CELLULAR
+            name.startsWith("tun") || arpType == 65534 -> IfaceType.VPN
+            name.startsWith("rndis") || name.startsWith("ncm") || name.startsWith("usb") -> IfaceType.USB
+            name.startsWith("bt-pan") || name.startsWith("bnep") -> IfaceType.BLUETOOTH
             name.startsWith("dummy") || name.startsWith("sit") || name.startsWith("ip6") ||
-                name.startsWith("ip_vti") || name.startsWith("ip6_vti") || name.startsWith("tunl") -> "虚拟"
-            arpType == 1 -> "以太网"
-            arpType == 803 || arpType == 801 || arpType == 802 -> "Wi‑Fi 监听"
-            else -> "类型 $arpType"
+                name.startsWith("ip_vti") || name.startsWith("ip6_vti") || name.startsWith("tunl") -> IfaceType.VIRTUAL
+            arpType == 1 -> IfaceType.ETHERNET
+            arpType == 803 || arpType == 801 || arpType == 802 -> IfaceType.MONITOR
+            else -> IfaceType.OTHER
         }
 
-    fun label(): String {
-        val dot = if (name == "any") "◆" else if (isUp && hasAddr) "●" else if (isUp) "◐" else "○"
-        val a = addrs.filter { !it.startsWith("fe80") }.take(2).joinToString(" ")
-        return "$dot $name · $kind" + if (a.isNotEmpty()) "  $a" else ""
-    }
+    /** Non-link-local addresses, for display. */
+    val displayAddrs: List<String> get() = addrs.filter { !it.startsWith("fe80") }
 
     companion object {
         val ANY = IfaceInfo("any", 0, "up", 1, true, false, emptyList())
@@ -69,7 +68,7 @@ data class IfaceInfo(
                 i.name.startsWith("wlan") -> s += 20
                 i.name == "lo" -> s -= 10
             }
-            if (i.kind == "虚拟") s -= 150
+            if (i.type == IfaceType.VIRTUAL) s -= 150
             if (i.name.startsWith("rmnet_ipa") || i.name.startsWith("r_rmnet")) s -= 120
             return s
         }

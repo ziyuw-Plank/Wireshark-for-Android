@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subtitle_version">Wireshark %1$s · arm64</string>
+    <string name="more_options">更多选项</string>
+
+    <string name="action_autoscroll">自动滚动</string>
+    <string name="action_back">返回</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_change">更换</string>
+    <string name="action_clear">清空包列表</string>
+    <string name="action_clear_filter">清除过滤器</string>
+    <string name="action_clear_history">清除</string>
+    <string name="action_close">关闭</string>
+    <string name="action_collapse_all">全部折叠</string>
+    <string name="action_copy">复制</string>
+    <string name="action_copy_all">复制全部</string>
+    <string name="action_copy_command">复制命令</string>
+    <string name="action_copy_details">复制详情文本</string>
+    <string name="action_delete">删除</string>
+    <string name="action_details">详情</string>
+    <string name="action_diagnostics">诊断</string>
+    <string name="action_expand_all">全部展开</string>
+    <string name="action_export">导出…</string>
+    <string name="action_follow_tcp">追踪 TCP 流</string>
+    <string name="action_follow_udp">追踪 UDP 流</string>
+    <string name="action_jump_latest">跳到最新</string>
+    <string name="action_ok">好</string>
+    <string name="action_open">打开</string>
+    <string name="action_open_file">打开文件</string>
+    <string name="action_refresh">刷新</string>
+    <string name="action_retry">重试</string>
+    <string name="action_saved">已保存的抓包</string>
+    <string name="action_settings">设置</string>
+    <string name="action_share">分享…</string>
+    <string name="action_start">开始</string>
+    <string name="action_start_capture">开始抓包</string>
+    <string name="action_stats">统计</string>
+    <string name="action_stop">停止</string>
+    <string name="action_stream_pc">推送到电脑 Wireshark</string>
+    <string name="action_undo">撤销</string>
+    <string name="state_starting">正在启动…</string>
+    <string name="state_stopping">正在停止…</string>
+
+    <string name="label_interface">抓包接口</string>
+    <string name="filter_hint">显示过滤器，如 dns || tls</string>
+    <string name="filter_valid">过滤器有效</string>
+    <string name="filter_invalid">过滤器无效</string>
+    <string name="filter_valid_hint">过滤器有效，点键盘上的搜索键应用。</string>
+    <string name="filter_recent">最近使用</string>
+    <string name="filter_suggestions">常用过滤器</string>
+    <string name="stat_packets">包数</string>
+    <string name="stat_bytes">数据量</string>
+    <string name="stat_duration">时长</string>
+    <string name="stat_rate">平均速率</string>
+    <string name="stat_rate_value">%1$s 包/秒</string>
+    <string name="empty_title">准备抓包</string>
+    <string name="empty_body">选好接口后点“开始抓包”，也可以打开已有的 pcap / pcapng 文件。</string>
+    <string name="empty_waiting_title">等待数据包</string>
+    <string name="empty_waiting_body">正在监听 %1$s，收到的包会显示在这里。</string>
+    <string name="empty_filtered_title">没有匹配的包</string>
+    <string name="empty_filtered_body">没有包符合当前的显示过滤器，清除或修改过滤器后再看。</string>
+    <string name="root_needed_title">实时抓包需要 root 权限</string>
+    <string name="root_needed_body">请在 Magisk / KernelSU / APatch 中允许 SharkDroid，然后点重试。没有 root 也能打开已有的抓包文件。</string>
+    <string name="ctx_filter_value">过滤：%1$s</string>
+    <string name="ctx_copy_row">复制此行</string>
+
+    <string name="sheet_iface_title">抓包接口</string>
+    <string name="sheet_iface_body">Wi‑Fi 一般是 wlan0，移动数据是 rmnet_data*。</string>
+    <string name="iface_group_active">已启用</string>
+    <string name="iface_group_inactive">未启用</string>
+    <string name="iface_no_addr">没有 IP 地址</string>
+    <string name="iface_any_desc">全部接口（Linux cooked 格式）</string>
+    <string name="ifstate_up">已连接</string>
+    <string name="ifstate_noaddr">已启用 · 无地址</string>
+    <string name="ifstate_down">未启用</string>
+    <string name="iftype_any">全部</string>
+    <string name="iftype_wifi">Wi‑Fi</string>
+    <string name="iftype_wifi_direct">Wi‑Fi 直连</string>
+    <string name="iftype_cellular">蜂窝</string>
+    <string name="iftype_vpn">VPN</string>
+    <string name="iftype_loopback">回环</string>
+    <string name="iftype_usb">USB 共享</string>
+    <string name="iftype_bluetooth">蓝牙</string>
+    <string name="iftype_ethernet">以太网</string>
+    <string name="iftype_virtual">虚拟</string>
+    <string name="iftype_monitor">监听</string>
+    <string name="iftype_other">其他</string>
+
+    <string name="sheet_start_title">新建抓包</string>
+    <string name="capture_filter_label">捕获过滤器（BPF，可选）</string>
+    <string name="capture_filter_help">抓包时由内核过滤，如 tcp port 443</string>
+    <string name="start_info">快照长度 %1$s 字节。抓到的包保存在应用私有目录；切到后台也会继续抓，直到你在这里或通知栏点停止。</string>
+
+    <string name="detail_title">第 %1$d 包</string>
+    <string name="detail_failed">无法解析这个包</string>
+    <string name="hex_title">字节</string>
+    <string name="hex_total">%1$d 字节</string>
+    <string name="hex_selection">偏移 %1$d · %2$d 字节</string>
+    <string name="hex_source">数据源</string>
+    <string name="ctx_apply_filter">设为显示过滤器</string>
+    <string name="ctx_copy_filter">复制过滤表达式</string>
+    <string name="ctx_copy_value">复制值</string>
+    <string name="ctx_copy_line">复制此行</string>
+    <string name="follow_tcp_title">TCP 流 #%1$d</string>
+    <string name="follow_udp_title">UDP 流 #%1$d</string>
+
+    <string name="saved_title">已保存的抓包</string>
+    <string name="saved_subtitle">应用私有目录 · 左滑删除</string>
+    <string name="saved_empty_title">还没有保存的抓包</string>
+    <string name="saved_empty_body">抓到或导入的文件都保存在这里，只有本应用能访问，直到你分享、导出或删除。</string>
+    <string name="saved_live">正在录制</string>
+    <string name="saved_current">已打开</string>
+    <string name="share_title">分享 %1$s</string>
+
+    <string name="stats_title">统计</string>
+    <string name="stats_protocols">协议分布</string>
+    <string name="stats_protocols_note">包列表中最多的协议（已应用显示过滤器）。</string>
+    <string name="stats_reports">tshark 报告</string>
+    <string name="report_running">tshark 运行中…</string>
+    <string name="report_empty">（没有结果）</string>
+    <string name="rep_phs">协议分级</string>
+    <string name="rep_phs_d">各协议层的帧数和字节数</string>
+    <string name="rep_conv_ip">会话 · IPv4</string>
+    <string name="rep_conv_ipv6">会话 · IPv6</string>
+    <string name="rep_conv_tcp">会话 · TCP</string>
+    <string name="rep_conv_udp">会话 · UDP</string>
+    <string name="rep_conv_d">每对端点之间的流量</string>
+    <string name="rep_endpoints">端点 · IPv4</string>
+    <string name="rep_endpoints_d">每个地址的包数和字节数</string>
+    <string name="rep_expert">专家信息</string>
+    <string name="rep_expert_d">解析器发现的错误、警告和提示</string>
+    <string name="rep_dns_q">DNS 查询列表</string>
+    <string name="rep_dns_q_d">本机查询过的所有域名</string>
+    <string name="rep_sni">TLS 服务器名 (SNI)</string>
+    <string name="rep_sni_d">TLS 连接的目标主机</string>
+    <string name="rep_http">HTTP 请求</string>
+    <string name="rep_http_d">按主机和 URI 统计的明文 HTTP 请求</string>
+    <string name="rep_dns_stats">DNS 统计</string>
+    <string name="rep_dns_stats_d">查询类型、响应码和耗时</string>
+    <string name="rep_io">IO 统计（每秒）</string>
+    <string name="rep_io_d">每 1 秒的帧数和字节数</string>
+
+    <string name="settings_title">设置</string>
+    <string name="settings_appearance">外观</string>
+    <string name="settings_theme">主题</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
+    <string name="settings_dynamic">动态取色</string>
+    <string name="settings_dynamic_d">使用壁纸颜色（Material You）</string>
+    <string name="settings_dynamic_na">需要 Android 12 或更高版本</string>
+    <string name="settings_capture">抓包</string>
+    <string name="settings_snaplen">快照长度</string>
+    <string name="settings_snaplen_d">每个包最多保存 %1$s 字节</string>
+    <string name="bytes_value">%1$s 字节</string>
+    <string name="settings_autoscroll">自动滚动</string>
+    <string name="settings_autoscroll_d">实时抓包时自动跟随最新的包</string>
+    <string name="settings_resolution">名称解析：关闭</string>
+    <string name="settings_resolution_d">地址不会被解析成主机名，应用自己不会发出任何 DNS 查询。</string>
+    <string name="settings_privacy">隐私与安全</string>
+    <string name="settings_security">SharkDroid 如何保护你</string>
+    <string name="settings_security_d">只有 dumpcap 以 root 运行，通过一个会校验所有参数的小辅助程序启动，不经过 shell。tshark 在隔离的沙箱进程里解析数据包。没有联网权限，没有遥测；抓包文件存在应用私有目录，只有你分享或导出时才会离开应用。</string>
+    <string name="settings_about">关于</string>
+    <string name="settings_version">版本 %1$s · Wireshark %2$s</string>
+    <string name="licenses_title">开源许可</string>
+    <string name="licenses_d">内置组件的 GPL、LGPL 等许可声明</string>
+    <string name="licenses_intro">SharkDroid 是自由软件，以 GNU GPL v2 或更高版本授权。它包含以下组件，均从官方源码编译（只加了少量移植补丁）。点一项查看它的许可证。</string>
+
+    <string name="diag_d">root、沙箱、接口和最近一次 dumpcap 日志</string>
+    <string name="diag_root">Root 权限</string>
+    <string name="diag_root_ok">已授权</string>
+    <string name="diag_root_denied">未授权</string>
+    <string name="diag_root_checking">正在检测…</string>
+    <string name="diag_sandbox">解析沙箱</string>
+    <string name="diag_sandbox_ok">隔离进程（uid %1$d）</string>
+    <string name="diag_sandbox_fallback">不可用，已改用应用 UID 运行（%1$s）</string>
+    <string name="diag_sandbox_unused">尚未使用</string>
+    <string name="diag_libdir">原生工具</string>
+    <string name="diag_ifaces">接口</string>
+    <string name="diag_ifaces_count">%1$d 个接口</string>
+    <string name="diag_dumpcap_log">最近一次 dumpcap 输出</string>
+    <string name="diag_none">（无）</string>
+    <string name="stream_body">用 USB 连接电脑并开启 USB 调试，然后在电脑上运行（Windows 请用 cmd.exe，或改用 Wireshark.exe 的完整路径）：</string>
+    <string name="stream_note">数据只经过已授权的 adb 通道，SharkDroid 不会开放任何网络端口。关闭 Wireshark 或按 Ctrl+C 停止。</string>
+
+    <string name="msg_bad_capture_filter">捕获过滤器只能包含可打印 ASCII 字符（最长 2048）</string>
+    <string name="msg_bad_display_filter">显示过滤器含非法字符</string>
+    <string name="msg_cannot_delete_live">该文件正在录制，不能删除</string>
+    <string name="msg_capture_not_started">抓包没有开始（退出码 %1$d）：\n%2$s</string>
+    <string name="msg_copied">已复制</string>
+    <string name="msg_deleted">已删除 %1$s</string>
+    <string name="msg_dumpcap_exit">dumpcap 退出码 %1$d：\n%2$s</string>
+    <string name="msg_export_failed">导出失败：%1$s</string>
+    <string name="msg_exported">已导出 %1$s</string>
+    <string name="msg_iface_failed">读取接口失败：%1$s</string>
+    <string name="msg_import_failed">导入失败：%1$s</string>
+    <string name="msg_importing">正在导入 %1$s…</string>
+    <string name="msg_no_file">还没有抓包或打开文件</string>
+    <string name="msg_open_failed">无法打开文件：%1$s</string>
+    <string name="msg_size_limit">捕获文件已达 %1$s 上限，已自动停止</string>
+    <string name="msg_stop_first">请先停止当前抓包</string>
+    <string name="msg_su_denied">su 被拒绝或不可用。请在 Magisk / KernelSU 中授予 SharkDroid root 权限。</string>
+    <string name="msg_su_failed">无法执行 su：%1$s\n请确认设备已 root，并在 Magisk / KernelSU 中授权本应用。</string>
+    <string name="msg_tshark_exit">tshark 退出码 %1$d：\n%2$s</string>
+    <string name="msg_tshark_failed">无法启动 tshark：%1$s</string>
+
+    <string name="notif_channel">抓包状态</string>
+    <string name="notif_title">SharkDroid 正在抓包</string>
+    <string name="notif_text">接口：%1$s</string>
+
+    <string-array name="filter_suggestion_desc">
+        <item>DNS 查询和应答</item>
+        <item>TLS Client Hello（新建的 TLS 连接）</item>
+        <item>明文 HTTP 请求</item>
+        <item>QUIC / HTTP/3 流量</item>
+        <item>HTTPS 端口的流量</item>
+        <item>重传、丢段等 TCP 问题</item>
+        <item>Ping 和 ICMP 错误</item>
+        <item>地址解析</item>
+        <item>隐藏常见的后台噪声</item>
+        <item>只看大包</item>
+    </string-array>
+</resources>

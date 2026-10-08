@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window_bg">#F5FAFB</color>
+    <color name="ic_bg_start">#0A2F5C</color>
+    <color name="ic_bg_end">#0E7C86</color>
+</resources>

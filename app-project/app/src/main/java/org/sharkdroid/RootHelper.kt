@@ -40,7 +40,7 @@ object RootHelper {
         val p = try {
             startProcess(ctx)
         } catch (e: Exception) {
-            return Result(-1, "", "无法执行 su: ${e.message}")
+            return Result(-1, "", "su: ${e.message}")
         }
         val errBuf = StringBuilder()
         val errT = thread(name = "su-stderr") { errBuf.append(readAllText(p.errorStream)) }

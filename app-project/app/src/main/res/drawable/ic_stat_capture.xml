@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status-bar icon for the "capturing" notification. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="66" android:viewportHeight="66">
+    <group android:translateX="-21" android:translateY="-21">
+    <group>
+        <clip-path android:pathData="M27,70 C39,59 50,38 73,30 C65,41 61,56 67,70 Z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M18,29h72v4.2h-72z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M18,36h72v4.2h-72z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M18,43h72v4.2h-72z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M18,50h72v4.2h-72z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M18,57h72v4.2h-72z" />
+        <path android:fillColor="#FFFFFFFF" android:pathData="M18,64h72v6h-72z" />
+    </group>
+    <path android:pathData="M27,73.5 q6.5,-4.6 13,0 t13,0 t13,0 t13,0"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="3.6" android:strokeLineCap="round" android:fillColor="#00000000" />
+    <path android:pathData="M37,81.5 q6,-4 12,0 t12,0 t12,0"
+        android:strokeColor="#99FFFFFF" android:strokeWidth="2.8" android:strokeLineCap="round" android:fillColor="#00000000" />
+    </group>
+</vector>

@@ -134,7 +134,7 @@ object Dissector {
                     Log.w(TAG, "sandbox unavailable ($pid), falling back to app uid")
                     sandboxed = false
                 } else {
-                    sandboxError = "无法绑定隔离进程"
+                    sandboxError = "bindService failed"
                     sandboxed = false
                 }
             }
@@ -142,7 +142,7 @@ object Dissector {
             val tshark = Tools.tshark(ctx)
             val pid = NativeSpawn.spawn(tshark, arrayOf(tshark) + args.toTypedArray(),
                 Tools.tsharkEnv(conf), input.fd, outPipe[1].fd, errPipe[1].fd)
-            if (pid <= 0) throw IllegalStateException("无法启动 tshark (errno ${-pid})")
+            if (pid <= 0) throw IllegalStateException("tshark spawn failed (errno ${-pid})")
             return Job(ParcelFileDescriptor.AutoCloseInputStream(outPipe[0]),
                 ParcelFileDescriptor.AutoCloseInputStream(errPipe[0]), pid, null)
         } finally {
@@ -167,12 +167,37 @@ object Dissector {
             while (true) {
                 val n = r.read(buf); if (n < 0) break
                 if (out.length < maxBytes) out.append(buf, 0, n)
-                else { out.append("\n…（输出过长，已截断）"); job.kill(); break }
+                else { out.append("\n… [output truncated]"); job.kill(); break }
             }
         } catch (_: Exception) { }
         t.join(3000)
         val rc = job.waitFor()
         return Triple(rc, out.toString(), err.toString())
+    }
+
+    /**
+     * Compile-check a display filter with tshark itself (same dissector registry as the
+     * packet list): tshark gets an empty pcap on stdin, so it only parses the filter.
+     * Returns null when the filter is valid, otherwise tshark's error message.
+     */
+    fun checkFilter(ctx: Context, filter: String): String? {
+        if (filter.isBlank()) return null
+        val pipe = ParcelFileDescriptor.createPipe()
+        // pcap global header (LE, v2.4, snaplen 65535, DLT_EN10MB) and no packets.
+        val hdr = byteArrayOf(0xd4.toByte(), 0xc3.toByte(), 0xb2.toByte(), 0xa1.toByte(), 2, 0, 4, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0xff.toByte(), 0xff.toByte(), 0, 0, 1, 0, 0, 0)
+        val w = pipe[1]
+        val job = start(ctx, listOf("-n", "-r", "-", "-Y", filter), pipe[0])
+        try { ParcelFileDescriptor.AutoCloseOutputStream(w).use { it.write(hdr) } } catch (_: Exception) { }
+        val err = StringBuilder()
+        val t = Thread { try { err.append(job.stderr.bufferedReader().readText().take(4096)) } catch (_: Exception) { } }
+        t.start()
+        try { job.stdout.readBytes() } catch (_: Exception) { }
+        t.join(5000)
+        val rc = job.waitFor()
+        if (rc == 0) return null
+        return cleanStderr(err.toString()).lineSequence().map { it.removePrefix("tshark: ").trim() }
+            .filter { it.isNotEmpty() }.joinToString(" ").ifEmpty { "exit $rc" }
     }
 
     /** Remove noise that tshark prints on Android for missing optional data files. */

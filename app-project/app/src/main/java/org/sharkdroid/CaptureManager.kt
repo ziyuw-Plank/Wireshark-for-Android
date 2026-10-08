@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import java.io.File
@@ -22,6 +23,7 @@ data class PacketRow(
     val protocols: String,
     val severity: Int,
     val tcpBad: Boolean,
+    val relTime: Double = 0.0,
 )
 
 /**
@@ -61,6 +63,14 @@ object CaptureManager {
     var dissecting = false; private set
     @Volatile var sink: Sink? = null; private set
     var dumpcapLog: String = ""; private set
+    /** Sum of frame lengths of the rows currently shown. */
+    var rowsBytes: Long = 0L; private set
+    /** frame.time_relative of the last shown row (seconds). */
+    var lastRelTime: Double = 0.0; private set
+    /** SystemClock.elapsedRealtime() when the current capture started / ended (0 = n/a). */
+    var startedAt: Long = 0L; private set
+    var endedAt: Long = 0L; private set
+    private var app: Context? = null
 
     private var suProc: Process? = null
     private var listJob: Dissector.Job? = null
@@ -72,19 +82,22 @@ object CaptureManager {
     private fun post(block: () -> Unit) = main.post(block)
     private fun fireState() = post { listeners.toList().forEach { it.onStateChanged() } }
     private fun fireMsg(m: String) = post { listeners.toList().forEach { it.onMessage(m) } }
+    private fun fireMsg(res: Int, vararg args: Any) { val c = app ?: return; fireMsg(c.getString(res, *args)) }
 
     // ---------------------------------------------------------------- capture
 
     fun startCapture(ctx: Context, ifc: String, captureFilter: String, dfilter: String, snaplen: Int = Tools.DEFAULT_SNAPLEN) {
         check(Looper.myLooper() == Looper.getMainLooper())
         if (state != State.IDLE) return
-        if (!Tools.validCaptureFilter(captureFilter)) { fireMsg("捕获过滤器只能包含可打印 ASCII 字符（最长 2048）"); return }
-        if (!Tools.validDisplayFilter(dfilter)) { fireMsg("显示过滤器含非法字符"); return }
         val app = ctx.applicationContext
+        this.app = app
+        if (!Tools.validCaptureFilter(captureFilter)) { fireMsg(R.string.msg_bad_capture_filter); return }
+        if (!Tools.validDisplayFilter(dfilter)) { fireMsg(R.string.msg_bad_display_filter); return }
         val f = Tools.newCaptureFile(app, "cap_" + Tools.safeFileName(ifc))
         val s = Sink(f)
         sink = s; file = f; iface = ifc; displayFilter = dfilter; dumpcapLog = ""
         state = State.STARTING
+        startedAt = SystemClock.elapsedRealtime(); endedAt = 0L
         fireState()
         try {
             app.startForegroundService(Intent(app, CaptureService::class.java).putExtra("iface", ifc))
@@ -94,7 +107,7 @@ object CaptureManager {
             val p = try {
                 RootHelper.startCapture(app, ifc, captureFilter, snaplen)
             } catch (e: Exception) {
-                fireMsg("无法启动 su：${e.message}\n请确认已 root 并在 Magisk/KernelSU 中授权本应用。")
+                fireMsg(R.string.msg_su_failed, e.message ?: "")
                 s.finish(); post { state = State.IDLE; fireState(); stopService(app) }
                 return@thread
             }
@@ -121,7 +134,7 @@ object CaptureManager {
                         s.bump(n)
                         if (!limitHit && s.written > Tools.MAX_CAPTURE_BYTES) {
                             limitHit = true
-                            fireMsg("捕获文件已达 ${Tools.humanBytes(Tools.MAX_CAPTURE_BYTES)} 上限，自动停止")
+                            fireMsg(R.string.msg_size_limit, Tools.humanBytes(Tools.MAX_CAPTURE_BYTES))
                             RootHelper.stopCapture(p)
                         }
                     }
@@ -138,13 +151,14 @@ object CaptureManager {
             post {
                 dumpcapLog = log
                 state = State.IDLE
+                endedAt = SystemClock.elapsedRealtime()
                 stopService(app)
                 fireState()
                 if (s.written == 0L) {
                     f.delete()
-                    fireMsg("抓包没有开始（退出码 $rc）：\n" + log.trim().ifEmpty { "su 被拒绝或不可用。请在 Magisk/KernelSU 中授予 SharkDroid root 权限。" })
+                    fireMsg(R.string.msg_capture_not_started, rc, log.trim().ifEmpty { app.getString(R.string.msg_su_denied) })
                 } else if (rc != 0 && rc != 143 && !log.contains("Packets captured")) {
-                    fireMsg("dumpcap 退出码 $rc：\n" + log.trim())
+                    fireMsg(R.string.msg_dumpcap_exit, rc, log.trim())
                 }
             }
         }
@@ -170,14 +184,17 @@ object CaptureManager {
 
     fun openFile(ctx: Context, f: File, dfilter: String) {
         check(Looper.myLooper() == Looper.getMainLooper())
-        if (state != State.IDLE) { fireMsg("请先停止当前抓包"); return }
-        if (!Tools.validDisplayFilter(dfilter)) { fireMsg("显示过滤器含非法字符"); return }
+        app = ctx.applicationContext
+        if (state != State.IDLE) { fireMsg(R.string.msg_stop_first); return }
+        if (!Tools.validDisplayFilter(dfilter)) { fireMsg(R.string.msg_bad_display_filter); return }
+        startedAt = 0L; endedAt = 0L
         file = f; iface = null; displayFilter = dfilter; sink = null
         startDissection(ctx.applicationContext, f, null)
     }
 
     fun applyDisplayFilter(ctx: Context, dfilter: String) {
-        if (!Tools.validDisplayFilter(dfilter)) { fireMsg("显示过滤器含非法字符"); return }
+        app = ctx.applicationContext
+        if (!Tools.validDisplayFilter(dfilter)) { fireMsg(R.string.msg_bad_display_filter); return }
         displayFilter = dfilter
         val f = file ?: return
         val s = sink
@@ -187,8 +204,8 @@ object CaptureManager {
     fun clear() {
         listJob?.kill(); listJob = null
         generation++
-        rows.clear(); rowsTruncated = false; dissecting = false
-        if (state == State.IDLE) { file = null; sink = null }
+        rows.clear(); rowsTruncated = false; dissecting = false; rowsBytes = 0L; lastRelTime = 0.0
+        if (state == State.IDLE) { file = null; sink = null; startedAt = 0L; endedAt = 0L }
         post { listeners.toList().forEach { it.onRowsChanged(true) } }
         fireState()
     }
@@ -200,7 +217,7 @@ object CaptureManager {
     private fun startDissection(app: Context, f: File, live: Sink?) {
         listJob?.kill(); listJob = null
         val gen = ++generation
-        rows.clear(); rowsTruncated = false; dissecting = true
+        rows.clear(); rowsTruncated = false; dissecting = true; rowsBytes = 0L; lastRelTime = 0.0
         listeners.toList().forEach { it.onRowsChanged(true) }
         fireState()
         val dfilter = displayFilter
@@ -211,14 +228,14 @@ object CaptureManager {
                 pipe[0]
             } else {
                 try { ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY) }
-                catch (e: Exception) { fireMsg("无法打开文件：${e.message}"); post { if (gen == generation) { dissecting = false; fireState() } }; return@thread }
+                catch (e: Exception) { fireMsg(R.string.msg_open_failed, e.message ?: ""); post { if (gen == generation) { dissecting = false; fireState() } }; return@thread }
             }
             val args = ArrayList<String>()
             args += listOf("-n", "-l", "-r", "-", "-T", "fields", "-E", "separator=/t", "-E", "occurrence=f", "-E", "quote=n")
             for (e in FIELDS) { args += "-e"; args += e }
             if (dfilter.isNotBlank()) { args += "-Y"; args += dfilter }
             val job = try { Dissector.start(app, args, input) } catch (e: Exception) {
-                fireMsg("无法启动 tshark：${e.message}"); post { if (gen == generation) { dissecting = false; fireState() } }; return@thread
+                fireMsg(R.string.msg_tshark_failed, e.message ?: ""); post { if (gen == generation) { dissecting = false; fireState() } }; return@thread
             }
             post { if (gen == generation) listJob = job else job.kill() }
             val err = StringBuilder()
@@ -249,7 +266,7 @@ object CaptureManager {
                 listJob = null
                 fireState()
                 val e = Dissector.cleanStderr(err.toString())
-                if (rc != 0 && rc != 137 && e.isNotEmpty()) fireMsg("tshark（退出码 $rc）：\n$e")
+                if (rc != 0 && rc != 137 && e.isNotEmpty()) fireMsg(R.string.msg_tshark_exit, rc, e)
                 else if (count == 0 && e.isNotEmpty()) fireMsg(e)
             }
         }
@@ -284,7 +301,10 @@ object CaptureManager {
         if (gen != generation) return
         val room = MAX_ROWS - rows.size
         if (room <= 0) { rowsTruncated = true; return }
-        if (b.size > room) { rows.addAll(b.subList(0, room)); rowsTruncated = true } else rows.addAll(b)
+        val add = if (b.size > room) { rowsTruncated = true; b.subList(0, room) } else b
+        rows.addAll(add)
+        for (r in add) rowsBytes += r.len
+        add.lastOrNull()?.let { lastRelTime = it.relTime }
         listeners.toList().forEach { it.onRowsChanged(false) }
     }
 
@@ -294,6 +314,6 @@ object CaptureManager {
         val num = f[0].toIntOrNull() ?: return null
         val t = f[1].let { s -> val dot = s.indexOf('.'); if (dot >= 0 && s.length > dot + 7) s.substring(0, dot + 7) else s }
         return PacketRow(num, t, f[2], f[3], f[4], f[5].toIntOrNull() ?: 0, f[9], f[6],
-            f[7].toIntOrNull() ?: 0, f[8].isNotEmpty())
+            f[7].toIntOrNull() ?: 0, f[8].isNotEmpty(), f[1].toDoubleOrNull() ?: 0.0)
     }
 }
