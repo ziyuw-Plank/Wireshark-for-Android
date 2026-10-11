@@ -19,7 +19,10 @@ export PREFIX="$ROOT/prefix"
 export CC="$TC/bin/${TARGET}${API}-clang"
 export CXX="$TC/bin/${TARGET}${API}-clang++"
 export AR="$TC/bin/llvm-ar" RANLIB="$TC/bin/llvm-ranlib" STRIP="$TC/bin/llvm-strip" NM="$TC/bin/llvm-nm" LD="$TC/bin/ld.lld" OBJCOPY="$TC/bin/llvm-objcopy" READELF="$TC/bin/llvm-readelf"
-export CFLAGS="-O2 -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -ffunction-sections -fdata-sections -I$PREFIX/include"
+# Map build paths so binaries do not depend on checkout/NDK location (reproducible builds).
+# tshark/dumpcap are linked with --build-id=none: the build ID hashes debug info that is stripped later.
+export REPRO_FLAGS="-ffile-prefix-map=$ROOT=/sharkdroid -ffile-prefix-map=$NDK=/ndk"
+export CFLAGS="$REPRO_FLAGS -O2 -fPIC -fstack-protector-strong -D_FORTIFY_SOURCE=2 -ffunction-sections -fdata-sections -I$PREFIX/include"
 export CXXFLAGS="$CFLAGS"
 export CPPFLAGS="-I$PREFIX/include"
 export LDFLAGS="-L$PREFIX/lib -Wl,-z,relro,-z,now -Wl,--gc-sections -Wl,-z,max-page-size=16384"

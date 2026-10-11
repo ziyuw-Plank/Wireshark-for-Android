@@ -9,9 +9,9 @@ mkdir -p "$ROOT/hosttools"
 if [ ! -f build-ws/build.ninja ]; then
 cmake -S wireshark-4.6.9 -B build-ws -G Ninja $TCF -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/ws -DCMAKE_FIND_ROOT_PATH=$PREFIX -DCMAKE_PREFIX_PATH=$PREFIX \
-  -DCMAKE_C_FLAGS="-fstack-protector-strong -D_FORTIFY_SOURCE=2 -I$PREFIX/include" \
-  -DCMAKE_CXX_FLAGS="-fstack-protector-strong -D_FORTIFY_SOURCE=2 -I$PREFIX/include" \
-  -DCMAKE_EXE_LINKER_FLAGS="-L$PREFIX/lib -Wl,-z,relro,-z,now -Wl,-z,max-page-size=16384" \
+  -DCMAKE_C_FLAGS="$REPRO_FLAGS -fstack-protector-strong -D_FORTIFY_SOURCE=2 -I$PREFIX/include" \
+  -DCMAKE_CXX_FLAGS="$REPRO_FLAGS -fstack-protector-strong -D_FORTIFY_SOURCE=2 -I$PREFIX/include" \
+  -DCMAKE_EXE_LINKER_FLAGS="-L$PREFIX/lib -Wl,--build-id=none -Wl,-z,relro,-z,now -Wl,-z,max-page-size=16384" \
   -DLEMON_EXECUTABLE=$ROOT/hosttools/lemon -DLEMON_TEMPLATE=$ROOT/src/wireshark-4.6.9/tools/lemon/lempar.c \
   -DBUILD_SHARED_LIBS=OFF -DUSE_STATIC=ON -DENABLE_PLUGINS=OFF -DENABLE_LUA=OFF \
   -DBUILD_wireshark=OFF -DBUILD_stratoshark=OFF -DBUILD_tshark=ON -DBUILD_dumpcap=ON -DBUILD_capinfos=ON -DBUILD_editcap=ON -DBUILD_mergecap=ON \

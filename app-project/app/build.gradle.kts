@@ -25,8 +25,8 @@ android {
         applicationId = "org.sharkdroid"
         minSdk = 29
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0-ws4.6.9"
+        versionCode = 3
+        versionName = "1.1.1"
         ndk { abiFilters += "arm64-v8a" }
     }
 
