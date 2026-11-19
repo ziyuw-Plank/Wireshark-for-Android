@@ -30,6 +30,8 @@ apksigner sign --alignment-preserved --ks <release keystore> \
 
 Building v1.1.1 in two different directories gave bit-identical unsigned APKs. After its
 signature was copied over, fdroidserver's `verify_apks` reported a match.
+v1.1.2 (Wireshark 4.6.10) was checked the same way: two directories, identical native libraries
+and unsigned APKs, and `apksigcopier compare` matched the signed release APK.
 
 ## Updates
 

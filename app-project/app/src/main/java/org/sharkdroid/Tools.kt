@@ -7,7 +7,7 @@ import java.util.Date
 import java.util.Locale
 
 object Tools {
-    const val WIRESHARK_VERSION = "4.6.9"
+    const val WIRESHARK_VERSION = "4.6.10"
     const val MAX_CAPTURE_BYTES = 2L * 1024 * 1024 * 1024 // auto-stop at 2 GiB
     const val DEFAULT_SNAPLEN = 262144
 

@@ -2,7 +2,7 @@
 # Package standalone CLI binaries (Android arm64, API 29+) for manual use via adb/su.
 set -euo pipefail
 source "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/env.sh"
-V=4.6.9
+V=4.6.10
 OUTN=sharkdroid-cli-wireshark-$V-android-arm64
 STAGE=$ROOT/out/stage/$OUTN
 rm -rf $ROOT/out/stage && mkdir -p $STAGE/bin $STAGE/share $STAGE/licenses $STAGE/patches
@@ -11,7 +11,7 @@ WS_INSTALL="$ROOT/out/ws-install"
 DESTDIR="$WS_INSTALL" cmake --install "$ROOT/src/build-ws"
 cp -r "$WS_INSTALL/ws/share/wireshark" "$STAGE/share/"
 cp $ROOT/helper/wsexec $STAGE/bin/wsexec
-cp $ROOT/src/wireshark-4.6.9/COPYING $STAGE/licenses/wireshark-COPYING
+cp $ROOT/src/wireshark-4.6.10/COPYING $STAGE/licenses/wireshark-COPYING
 cp $ROOT/src/libpcap-1.11.0/LICENSE $STAGE/licenses/libpcap-LICENSE
 cp $ROOT/src/glib-2.88.3/COPYING $STAGE/licenses/glib-COPYING 2>/dev/null || cp $ROOT/src/glib-2.88.3/LICENSES/LGPL-2.1-or-later.txt $STAGE/licenses/glib-LGPL-2.1
 cp $ROOT/src/libgcrypt-1.12.4/COPYING.LIB $STAGE/licenses/libgcrypt-COPYING.LIB

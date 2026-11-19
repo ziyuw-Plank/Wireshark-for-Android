@@ -5,14 +5,14 @@ cd $ROOT/src
 TCF="-DCMAKE_TOOLCHAIN_FILE=$NDK/build/cmake/android.toolchain.cmake -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-$API"
 mkdir -p "$ROOT/hosttools"
 # Lemon runs on the host, so build it before CMake checks LEMON_EXECUTABLE.
-[ -x "$ROOT/hosttools/lemon" ] || gcc -O2 -w -o "$ROOT/hosttools/lemon" "$ROOT/src/wireshark-4.6.9/tools/lemon/lemon.c"
+[ -x "$ROOT/hosttools/lemon" ] || gcc -O2 -w -o "$ROOT/hosttools/lemon" "$ROOT/src/wireshark-4.6.10/tools/lemon/lemon.c"
 if [ ! -f build-ws/build.ninja ]; then
-cmake -S wireshark-4.6.9 -B build-ws -G Ninja $TCF -DCMAKE_BUILD_TYPE=Release \
+cmake -S wireshark-4.6.10 -B build-ws -G Ninja $TCF -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=/ws -DCMAKE_FIND_ROOT_PATH=$PREFIX -DCMAKE_PREFIX_PATH=$PREFIX \
   -DCMAKE_C_FLAGS="$REPRO_FLAGS -fstack-protector-strong -D_FORTIFY_SOURCE=2 -I$PREFIX/include" \
   -DCMAKE_CXX_FLAGS="$REPRO_FLAGS -fstack-protector-strong -D_FORTIFY_SOURCE=2 -I$PREFIX/include" \
   -DCMAKE_EXE_LINKER_FLAGS="-L$PREFIX/lib -Wl,--build-id=none -Wl,-z,relro,-z,now -Wl,-z,max-page-size=16384" \
-  -DLEMON_EXECUTABLE=$ROOT/hosttools/lemon -DLEMON_TEMPLATE=$ROOT/src/wireshark-4.6.9/tools/lemon/lempar.c \
+  -DLEMON_EXECUTABLE=$ROOT/hosttools/lemon -DLEMON_TEMPLATE=$ROOT/src/wireshark-4.6.10/tools/lemon/lempar.c \
   -DBUILD_SHARED_LIBS=OFF -DUSE_STATIC=ON -DENABLE_PLUGINS=OFF -DENABLE_LUA=OFF \
   -DBUILD_wireshark=OFF -DBUILD_stratoshark=OFF -DBUILD_tshark=ON -DBUILD_dumpcap=ON -DBUILD_capinfos=ON -DBUILD_editcap=ON -DBUILD_mergecap=ON \
   -DBUILD_rawshark=OFF -DBUILD_text2pcap=OFF -DBUILD_reordercap=OFF -DBUILD_captype=OFF -DBUILD_randpkt=OFF -DBUILD_dftest=OFF -DBUILD_dcerpcidl2wrs=OFF \

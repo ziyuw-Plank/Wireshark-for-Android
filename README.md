@@ -2,7 +2,7 @@
 
 # SharkDroid: Wireshark for rooted Android (arm64)
 
-SharkDroid brings the capture and dissection core of **Wireshark 4.6.9** (the latest stable release, September 2026, with every upstream security fix up to that version) to Android: `dumpcap` and `tshark` with all protocol dissectors, cross-compiled with Android NDK r27c for arm64-v8a (Android 10 / API 29 and later). It comes with a phone-friendly Material 3 app, plus a command-line bundle you can use over adb / su.
+SharkDroid brings the capture and dissection core of **Wireshark 4.6.10** (the latest stable release, November 2026, with every upstream security fix up to that version) to Android: `dumpcap` and `tshark` with all protocol dissectors, cross-compiled with Android NDK r27c for arm64-v8a (Android 10 / API 29 and later). It comes with a phone-friendly Material 3 app, plus a command-line bundle you can use over adb / su.
 
 > Wireshark has no official Android version. The desktop Qt GUI is not ported. The packet list, protocol tree and hex view are SharkDroid's own UI, but every dissection result comes from the real tshark.
 
@@ -21,8 +21,8 @@ The repository only contains source code. The APK and the command-line bundle ar
 
 | File | What it is |
 |---|---|
-| `SharkDroid-<version>-wireshark-4.6.9-arm64-release.apk` | The app, self-signed release build (install this one) |
-| `sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz` | Command-line bundle: `tshark`, `dumpcap`, `capinfos`, `editcap`, `mergecap` and data files |
+| `SharkDroid-<version>.apk` | The app, self-signed release build (install this one) |
+| `sharkdroid-cli-wireshark-4.6.10-android-arm64.tar.gz` | Command-line bundle: `tshark`, `dumpcap`, `capinfos`, `editcap`, `mergecap` and data files |
 | `SOURCES.txt` | Download URL, signature / checksum verification, SHA256 and local patches for every upstream source |
 | `SHA256SUMS` | Checksums of the release files |
 | `sharkdroid-source.tar.gz` | Snapshot of this repository at the release tag |
@@ -32,7 +32,7 @@ The release APK is signed with a self-signed certificate, SHA-256 `72590f3238296
 ## Installing the app
 
 1. On the phone, enable USB debugging in Developer options. This is only needed for adb; you can also copy the APK to the phone and open it there.
-2. On the computer: `adb install SharkDroid-<version>-wireshark-4.6.9-arm64-release.apk`
+2. On the computer: `adb install SharkDroid-<version>.apk`
    - Some ROMs show a "security check" screen before installing. Choose to continue (the app has no internet permission).
 3. Open SharkDroid. The first time, it asks for superuser access:
    - **Magisk**: tap "Allow" in the prompt ("Forever" is recommended).
@@ -77,9 +77,9 @@ adb exec-out "su -c '<app native library dir>/libdumpcap.so -i wlan0 -F pcapng -
 With only the command-line bundle (no app):
 
 ```bash
-adb push sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz /data/local/tmp/
-adb shell "cd /data/local/tmp && tar xzf sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz"
-adb exec-out "su -c '/data/local/tmp/sharkdroid-cli-wireshark-4.6.9-android-arm64/bin/dumpcap -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
+adb push sharkdroid-cli-wireshark-4.6.10-android-arm64.tar.gz /data/local/tmp/
+adb shell "cd /data/local/tmp && tar xzf sharkdroid-cli-wireshark-4.6.10-android-arm64.tar.gz"
+adb exec-out "su -c '/data/local/tmp/sharkdroid-cli-wireshark-4.6.10-android-arm64/bin/dumpcap -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
 ```
 
 On Windows, PowerShell pipes corrupt binary data. Use **cmd.exe** and replace `wireshark` with `"C:\Program Files\Wireshark\Wireshark.exe"`. Data only travels over the authorized adb connection; the app never opens a network port.
@@ -88,7 +88,7 @@ On Windows, PowerShell pipes corrupt binary data. Use **cmd.exe** and replace `w
 
 ```sh
 su
-cd /data/local/tmp/sharkdroid-cli-wireshark-4.6.9-android-arm64
+cd /data/local/tmp/sharkdroid-cli-wireshark-4.6.10-android-arm64
 sh ws.sh dumpcap -D                                        # list interfaces
 sh ws.sh dumpcap -i wlan0 -a duration:30 -w /data/local/tmp/a.pcapng
 sh ws.sh tshark -n -r /data/local/tmp/a.pcapng -Y dns

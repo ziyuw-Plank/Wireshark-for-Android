@@ -2,7 +2,7 @@
 
 # SharkDroid：Android 版 Wireshark（arm64，需要 root）
 
-SharkDroid 把 **Wireshark 4.6.9**（2026-09 发布的最新稳定版，包含截至该版本的全部上游安全修复）里负责抓包和解析的核心带到了 Android 上：`dumpcap` 和 `tshark`，包含全部协议解析器，用 Android NDK r27c 交叉编译到 arm64-v8a（Android 10 / API 29 及以上）。外面配了一个适合手机使用的 Material 3 App，另外还有一个可以通过 adb / su 手动使用的命令行包。
+SharkDroid 把 **Wireshark 4.6.10**（2026-11 发布的最新稳定版，包含截至该版本的全部上游安全修复）里负责抓包和解析的核心带到了 Android 上：`dumpcap` 和 `tshark`，包含全部协议解析器，用 Android NDK r27c 交叉编译到 arm64-v8a（Android 10 / API 29 及以上）。外面配了一个适合手机使用的 Material 3 App，另外还有一个可以通过 adb / su 手动使用的命令行包。
 
 > Wireshark 官方没有 Android 版。这里没有移植桌面版的 Qt 图形界面。包列表、协议树和十六进制视图是 SharkDroid 自己的界面，但所有解析结果都来自真正的 tshark。
 
@@ -21,8 +21,8 @@ SharkDroid 把 **Wireshark 4.6.9**（2026-09 发布的最新稳定版，包含�
 
 | 文件 | 说明 |
 |---|---|
-| `SharkDroid-<版本>-wireshark-4.6.9-arm64-release.apk` | App，自签名 release 版（安装这个） |
-| `sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz` | 命令行包：`tshark`、`dumpcap`、`capinfos`、`editcap`、`mergecap` 和数据文件 |
+| `SharkDroid-<版本>.apk` | App，自签名 release 版（安装这个） |
+| `sharkdroid-cli-wireshark-4.6.10-android-arm64.tar.gz` | 命令行包：`tshark`、`dumpcap`、`capinfos`、`editcap`、`mergecap` 和数据文件 |
 | `SOURCES.txt` | 每个上游源码的下载地址、签名或校验结果、SHA256 和本地补丁 |
 | `SHA256SUMS` | 发布文件的校验值 |
 | `sharkdroid-source.tar.gz` | 本仓库在该版本标签处的源码快照 |
@@ -32,7 +32,7 @@ release APK 使用自签名证书，SHA-256 为 `72590f3238296885b7d1a2b9b600594
 ## 安装 App
 
 1. 在手机的开发者选项里打开 USB 调试。只有用 adb 安装时才需要；也可以把 APK 拷到手机上直接打开安装。
-2. 在电脑上运行：`adb install SharkDroid-<版本>-wireshark-4.6.9-arm64-release.apk`
+2. 在电脑上运行：`adb install SharkDroid-<版本>.apk`
    - 部分 ROM 安装前会弹出“安全检查”页面，选择继续即可（App 没有联网权限）。
 3. 打开 SharkDroid。第一次打开时会请求超级用户权限：
    - **Magisk**：在弹窗里点“允许”（建议选“永久”）。
@@ -77,9 +77,9 @@ adb exec-out "su -c '<App 原生库目录>/libdumpcap.so -i wlan0 -F pcapng -q -
 不装 App、只用命令行包：
 
 ```bash
-adb push sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz /data/local/tmp/
-adb shell "cd /data/local/tmp && tar xzf sharkdroid-cli-wireshark-4.6.9-android-arm64.tar.gz"
-adb exec-out "su -c '/data/local/tmp/sharkdroid-cli-wireshark-4.6.9-android-arm64/bin/dumpcap -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
+adb push sharkdroid-cli-wireshark-4.6.10-android-arm64.tar.gz /data/local/tmp/
+adb shell "cd /data/local/tmp && tar xzf sharkdroid-cli-wireshark-4.6.10-android-arm64.tar.gz"
+adb exec-out "su -c '/data/local/tmp/sharkdroid-cli-wireshark-4.6.10-android-arm64/bin/dumpcap -i wlan0 -F pcapng -q -w -'" | wireshark -k -i -
 ```
 
 Windows 下 PowerShell 的管道会破坏二进制数据，请在 **cmd.exe** 里运行，并把 `wireshark` 换成 `"C:\Program Files\Wireshark\Wireshark.exe"`。数据只经过已授权的 adb 通道，App 不会开放任何网络端口。
@@ -88,7 +88,7 @@ Windows 下 PowerShell 的管道会破坏二进制数据，请在 **cmd.exe** �
 
 ```sh
 su
-cd /data/local/tmp/sharkdroid-cli-wireshark-4.6.9-android-arm64
+cd /data/local/tmp/sharkdroid-cli-wireshark-4.6.10-android-arm64
 sh ws.sh dumpcap -D                                        # 列出接口
 sh ws.sh dumpcap -i wlan0 -a duration:30 -w /data/local/tmp/a.pcapng
 sh ws.sh tshark -n -r /data/local/tmp/a.pcapng -Y dns

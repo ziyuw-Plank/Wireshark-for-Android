@@ -1,0 +1,1 @@
+SharkDroid 1.1.2 updates the bundled tools to Wireshark 4.6.10, which fixes 39 security vulnerabilities (wnpa-sec-2026-111 to 149, mostly dissector and file parser crashes and loops) and a number of other bugs. The app itself is unchanged.

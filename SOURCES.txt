@@ -1,6 +1,6 @@
-SharkDroid — pinned upstream sources (all verified on 2026-10-08)
+SharkDroid — pinned upstream sources (verified on 2026-10-08; Wireshark 4.6.10 on 2026-11-19)
 
-wireshark-4.6.9.tar.xz             https://www.wireshark.org/download/src/all-versions/wireshark-4.6.9.tar.xz  (GPG: SIGNATURES-4.6.9.txt, Gerald Combs key 5A5ADBA7DBEA6C3F87224F1982244A78E6FEAEEA, Good signature)
+wireshark-4.6.10.tar.xz            https://www.wireshark.org/download/src/all-versions/wireshark-4.6.10.tar.xz  (GPG: SIGNATURES-4.6.10.txt, Gerald Combs key 5A5ADBA7DBEA6C3F87224F1982244A78E6FEAEEA, Good signature)
 libpcap-1.11.0.tar.xz              https://www.tcpdump.org/release/libpcap-1.11.0.tar.xz  (GPG .sig, Tcpdump Group key 1F166A5742ABB9E0249A8D30E089DEF1D9C15D0D, Good signature)
 glib-2.88.3.tar.xz                 https://download.gnome.org/sources/glib/2.88/glib-2.88.3.tar.xz  (matches GNOME .sha256sum)
 libxml2-2.15.4.tar.xz              https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.4.tar.xz  (matches GNOME .sha256sum)
@@ -12,7 +12,7 @@ libffi-3.8.0.tar.gz                https://github.com/libffi/libffi/releases/dow
 android-ndk-r27c-linux.zip         https://dl.google.com/android/repository/android-ndk-r27c-linux.zip  (SHA1 matches Google repository2-3.xml: 090e8083a715fdb1a3e402d0763c388abb03fb4e)
 
 SHA256:
-d062d416a1ab3a49975aafe3a671c882dde0562ccd71b078808ceb59d465fc0f  wireshark-4.6.9.tar.xz
+268f41bdf8acee561b670217cf6ea74cf9e779477543e59f92f1cd00294a03dd  wireshark-4.6.10.tar.xz
 9237f5bae9dcf3a91823d9963ec43b7c0e2e3374ef2ad57d92c8cd39530f4723  libpcap-1.11.0.tar.xz
 ab24d24e698dfa1e408b7bcdb508f4aafc906185a8b8ce72fdf79bbbdc9b383b  glib-2.88.3.tar.xz
 98087fd181d9070724f3fbc65c7377db03038eb92bd882374daff44940138821  libxml2-2.15.4.tar.xz
